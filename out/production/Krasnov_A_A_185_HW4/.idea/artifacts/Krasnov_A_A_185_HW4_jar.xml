@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Krasnov_A_A_185_HW4:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Krasnov_A_A_185_HW4_jar</output-path>
+    <root id="archive" name="Krasnov_A_A_185_HW4.jar">
+      <element id="module-output" name="Krasnov_A_A_185_HW4" />
+    </root>
+  </artifact>
+</component>

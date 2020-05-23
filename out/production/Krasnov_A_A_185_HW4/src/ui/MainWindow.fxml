@@ -1,0 +1,136 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<BorderPane fx:controller="ui.Controller" xmlns:fx="http://javafx.com/fxml"
+            prefHeight="600" prefWidth="100" minWidth="1000" maxWidth="1000">
+    <top>
+        <StackPane minHeight="5">
+            <padding>
+                <Insets top="10" bottom="15"/>
+            </padding>
+            <Text text="Battleship" BorderPane.alignment="CENTER"
+                  style="-fx-font-weight: bolder; -fx-font: 20pt arial; "/>
+        </StackPane>
+    </top>
+
+    <left>
+        <GridPane fx:id="gridBattleFieldRival" alignment="center" hgap="1.5" vgap="1.5" prefWidth="400" minWidth="400"
+                  style="-fx-background-color: aquamarine;">
+            <padding>
+                <Insets top="5" right="10" bottom="10" left="10"/>
+            </padding>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="40.0"
+                                   halignment="CENTER"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="5.0" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+            </rowConstraints>
+        </GridPane>
+    </left>
+
+    <center>
+        <GridPane fx:id="gridBattleFieldMe" alignment="center" hgap="1.5" vgap="1.5" prefWidth="400" minWidth="400"
+                  style="-fx-background-color: aqua;">
+            <padding>
+                <Insets top="5" right="10" bottom="10" left="20"/>
+            </padding>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="40.0"
+                                   halignment="CENTER"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="5.0" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+            </rowConstraints>
+        </GridPane>
+    </center>
+
+    <right>
+        <VBox minWidth="200">
+            <padding>
+                <Insets top="5" right="5" bottom="10" left="15"/>
+            </padding>
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200" prefHeight="150">
+                <Text fx:id="txtInfo" lineSpacing="10"/>
+            </ScrollPane>
+            <HBox>
+                <padding>
+                    <Insets top="10" bottom="15"/>
+                </padding>
+                <Label text="Row: "/>
+                <TextField fx:id="txtXCoord" prefWidth="25"/>
+                <Label text="  Column:"/>
+                <TextField fx:id="txtYCoord" prefWidth="25"/>
+            </HBox>
+
+            <VBox spacing="15">
+                <Button text="Shoot"
+                        onAction="#handleBtnShoot"/>
+                <Button text="New game"
+                        onAction="#handleBtnPlayAgain"/>
+            </VBox>
+        </VBox>
+    </right>
+
+    <bottom>
+        <VBox prefWidth="200" prefHeight="150" maxWidth="250" minHeight="100" maxHeight="200">
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="150" prefHeight="150" minHeight="100"
+                        maxHeight="200">
+                <Text fx:id="txtLogging" wrappingWidth="200"/>
+            </ScrollPane>
+        </VBox>
+    </bottom>
+
+</BorderPane>
