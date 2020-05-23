@@ -135,7 +135,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Application.Client">
     <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
       <option name="VMOptions" />
       <option name="arguments" />
@@ -367,7 +367,7 @@
       <workItem from="1586590480402" duration="655000" />
       <workItem from="1590091133881" duration="33000" />
       <workItem from="1590222614234" duration="266000" />
-      <workItem from="1590222927601" duration="11207000" />
+      <workItem from="1590222927601" duration="17334000" />
     </task>
     <task id="LOCAL-00001" summary="Moved methods from Main to Controller, added changing color after hit and new game">
       <created>1586377727893</created>
@@ -400,17 +400,6 @@
     <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
     <MESSAGE value="Moved methods from Main to Controller, added changing color after hit and new game" />
     <option name="LAST_COMMIT_MESSAGE" value="Moved methods from Main to Controller, added changing color after hit and new game" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/ui/Controller.java</url>
-          <line>171</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Krasnov_A_A_185_HW4$EmptySeaTest.ic" NAME="EmptySeaTest Coverage Results" MODIFIED="1586421016014" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

@@ -63,7 +63,8 @@ public abstract class NetworkConnection {
                     }
                 }
             } catch (Exception e) {
-                onReceiveCallback.accept("Connection closed");
+                System.out.println("exit");
+//                onReceiveCallback.accept("Connection closed");
                 // e.printStackTrace();
             }
         }

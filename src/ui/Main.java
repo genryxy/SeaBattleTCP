@@ -27,7 +27,8 @@ public class Main extends Application {
     private boolean isServer = true;
 
     private TextArea messages = new TextArea();
-    private NetworkConnection connection = isServer ? createServer() : createClient();
+    private Controller controller;
+    private NetworkConnection connection;
 
     private Parent createContent() {
         messages.setPrefHeight(450);
@@ -53,25 +54,27 @@ public class Main extends Application {
     private Server createServer() {
         return new Server(4080, data -> {
             // Get control back to the ui thread
-//            Platform.runLater(() -> {
-                messages.appendText("Server: " + data.toString() + "\n");
-//            });
+            Platform.runLater(() -> {
+                String[] text = data.toString().split(",");
+                controller.markShotFromRival(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
+            });
         });
     }
 
     private Client createClient() {
         return new Client(4080, "localhost", data -> {
             // Get control back to the ui thread
-//            Platform.runLater(() -> {
-                messages.appendText("Client: " + data.toString() + "\n");
-//            });
+            Platform.runLater(() -> {
+                String[] text = data.toString().split(",");
+                controller.markShotFromRival(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
+            });
         });
     }
 
-    @Override
-    public void init() {
-        connection.startConnection();
-    }
+//    @Override
+//    public void init() {
+//        connection.startConnection();
+//    }
 
     public static void main(String[] args) {
         launch(args);
@@ -84,9 +87,17 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-//        primaryStage.setScene(new Scene(createContent()));
-//        primaryStage.show();
-
+        List<String> params = getParameters().getRaw();
+        if (params.size() > 0 && params.get(0).substring(0, "Server".length()).equals("Server")) {
+            isServer = true;
+            connection = createServer();
+        } else if (params.size() > 0 && params.get(0).substring(0, "Client".length()).equals("Client")) {
+            isServer = false;
+            connection = createClient();
+        } else {
+            System.out.println("Wrong params!");
+            return;
+        }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
         Parent root = loader.load();
         primaryStage.setMinHeight(600);
@@ -96,42 +107,8 @@ public class Main extends Application {
         primaryStage.setTitle(isServer ? "Battleship_Server" : "Battleship_Client");
         primaryStage.setScene(new Scene(root, 1000, 600));
         primaryStage.show();
-        Controller controller = loader.getController();
+        controller = loader.getController();
         controller.initializeAll(connection);
-
-//        List<String> params = getParameters().getRaw();
-//        if (params.size() > 0 && params.get(0).substring(0, "Server".length()).equals("Server")) {
-////            Server myServer = new Server(4080, getClass(), primaryStage);
-//            Server myServer = new Server(4080);
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-//            Parent root = null;
-//            try {
-//                root = loader.load();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            primaryStage.setMinHeight(500);
-//            primaryStage.setMinWidth(450);
-//            primaryStage.setTitle("Battleship_Server");
-//            primaryStage.setScene(new Scene(root, 600, 600));
-//            primaryStage.show();
-//            Controller controller = loader.getController();
-//            controller.initializeAll();
-//            myServer.createSocket();
-//        } else if (params.size() > 0 && params.get(0).substring(0, "Client".length()).equals("Client")) {
-//            Client myClient = new Client(4080, "localhost");
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-//            Parent root = loader.load();
-//            primaryStage.setMinHeight(500);
-//            primaryStage.setMinWidth(450);
-//            primaryStage.setTitle("Battleship_Client");
-//            primaryStage.setScene(new Scene(root, 600, 600));
-//            primaryStage.show();
-//            Controller controller = loader.getController();
-//            controller.initializeAll();
-//            myClient.createSocket();
-//        } else {
-//            System.out.println("Wrong params!");
-//        }
+        connection.startConnection();
     }
 }

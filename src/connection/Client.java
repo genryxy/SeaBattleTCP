@@ -1,9 +1,7 @@
 package connection;
 
 
-import java.io.*;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.io.Serializable;
 import java.util.function.Consumer;
 
 public class Client extends NetworkConnection {

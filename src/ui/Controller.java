@@ -23,7 +23,8 @@ public class Controller {
     private int x;
     private int y;
     private StringBuilder loggingMsg = new StringBuilder();
-    NetworkConnection connection;
+    private NetworkConnection connection;
+    private Boolean isGetAnswer;
 
     @FXML
     private TextField txtYCoord;
@@ -78,7 +79,12 @@ public class Controller {
                     GridPane.setHalignment(lbl, HPos.CENTER);
                     getGridBattleFieldRival().add(lbl, i, 0);
                 } else {
-                    getGridBattleFieldRival().add(createButton(""), j, i);
+                    Button btn = createButton("");
+                    btn.setOnAction(actionEvent -> {
+                        clickListener(btn);
+                    });
+
+                    getGridBattleFieldRival().add(btn, j, i);
                 }
             }
         }
@@ -97,7 +103,6 @@ public class Controller {
                     getGridBattleFieldMe().add(lbl, i, 0);
                 } else {
                     getGridBattleFieldMe().add(createButton(""), j, i);
-                    getGridBattleFieldMe().getChildren().get(getGridBattleFieldMe().getChildren().size() - 1).setDisable(true);
                 }
             }
         }
@@ -129,21 +134,37 @@ public class Controller {
      * @param row    The index of row in GridPane.
      * @param column The index of column in GridPane.
      */
-    private void doShootAtCoordinates(int row, int column) {
+    public void doShootAtCoordinates(int row, int column) {
         // GridPane contains labels in the first row and in the first column (except
         // position [0,0]). Shape(11x11). Children store in ObservableList<Node>.
+        Button btn = ((Button) getGridBattleFieldRival().getChildren().get((row + 1) * ocean.SIZE + column + (row + 1)));
+        btn.fire();
         try {
-            connection.send(row + "," + column);
-            System.out.println(row + "," + column);
+            connection.send(row + "," + column + "," + btn.getText());
+            System.out.println(row + "," + column + "," + btn.getText());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ((Button) getGridBattleFieldRival().getChildren().get((row + 1) * ocean.SIZE + column + (row + 1))).fire();
+    }
+
+    public void markShotFromRival(int row, int column, String text) {
+        // GridPane contains labels in the first row and in the first column (except
+        // position [0,0]). Shape(11x11). Children store in ObservableList<Node>.
+        System.out.println("let's mark: " + row + ", " + column + ", " + text);
+        Button btn = ((Button) getGridBattleFieldMe().getChildren().get((row + 1) * ocean.SIZE + column + (row + 1)));
+        btn.fire();
+        btn.setText(text);
+        if (text.equals("x")) {
+            setBtnBackground(btn, Color.RED);
+        } else if (text.equals("S")) {
+            setBtnBackground(btn, Color.TOMATO);
+        } else {
+            setBtnBackground(btn, Color.LIGHTGRAY);
+        }
     }
 
     /**
      * Creates a new instance of the button with specified parameters.
-     * Also adds action listener.
      *
      * @param text The content of the button.
      * @return The new instance of button.
@@ -153,9 +174,6 @@ public class Controller {
         setBtnBackground(btn, Color.LIGHTBLUE);
         // Allows to resize the button.
         btn.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        btn.setOnAction(actionEvent -> {
-            clickListener(btn);
-        });
         return btn;
     }
 
@@ -171,13 +189,6 @@ public class Controller {
             // first row and in the first column.
             int row = GridPane.getRowIndex(btn) - 1;
             int column = GridPane.getColumnIndex(btn) - 1;
-            //try {
-            //    connection.send(row + "," + column);
-            //    System.out.println(row + "," + column);
-            // } catch (IOException e) {
-            //     e.printStackTrace();
-            // }
-
             if (ocean.getShipsArray()[row][column].isAlreadyFired(row, column)) {
                 loggingMsg.append("attempt to shoot the marked cell\n");
                 createAlertRepeatedShot();
@@ -195,6 +206,14 @@ public class Controller {
                 loggingMsg.append(ocean.getShotsFired()).append(". Move: ").append(row)
                         .append(",").append(column).append("\n");
                 loggingMsg.append(ocean.getInfoAboutShot());
+
+                try {
+                    connection.send(row + "," + column + "," + btn.getText());
+                    System.out.println(row + "," + column + "," + btn.getText());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 if (ocean.isGameOver()) {
                     createAlertPlayAgain(true);
                 }
@@ -289,6 +308,12 @@ public class Controller {
                 setBtnBackground(currBtn, Color.SILVER);
                 if (ocean.getShipsArray()[i][j].isSunk()) {
                     setBtnBackground(currBtn, Color.RED);
+                }
+
+                try {
+                    connection.send(i + "," + j + "," + currBtn.getText());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }

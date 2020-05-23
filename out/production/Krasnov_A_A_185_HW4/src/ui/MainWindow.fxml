@@ -63,7 +63,7 @@
 
     <center>
         <GridPane fx:id="gridBattleFieldMe" alignment="center" hgap="1.5" vgap="1.5" prefWidth="400" minWidth="400"
-                  style="-fx-background-color: aqua;">
+                  style="-fx-background-color: ghostwhite;">
             <padding>
                 <Insets top="5" right="10" bottom="10" left="20"/>
             </padding>
