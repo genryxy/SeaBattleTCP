@@ -9,12 +9,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -22,7 +18,6 @@ public class Main extends Application {
 
     private boolean isServer = true;
 
-    private TextArea messages = new TextArea();
     private Controller controller;
     private NetworkConnection connection;
 
@@ -30,18 +25,14 @@ public class Main extends Application {
         return new Server(port, data -> {
             // Get control back to the ui thread
             Platform.runLater(() -> {
-                if (data.equals("Client")) {
+                String str = data.toString();
+                if (str.equals("Client")) {
                     controller.setHasOpponent(true);
+                    controller.sendInfo("Server", null, true);
+                    Dialogs.createAlertStartGame();
                     System.out.println("get msg from client, let's begin");
-                } else if (data.equals("exit")) {
-                    Dialogs.createAlertOpponentExit();
-                    controller.setHasOpponent(false);
-                    controller.reset();
-                    controller.sendInfo("kill", null, false);
                 } else {
-                    String[] text = data.toString().split(",");
-                    controller.setGotAnswer(true);
-                    controller.markShotFromOpponent(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
+                    processData(str);
                 }
             });
         });
@@ -51,21 +42,38 @@ public class Main extends Application {
         return new Client(port, host, data -> {
             // Get control back to the ui thread
             Platform.runLater(() -> {
-                if (data.equals("Server")) {
+                String str = data.toString();
+                if (str.equals("Server")) {
                     controller.setHasOpponent(true);
+                    Dialogs.createAlertStartGame();
                     System.out.println("get msg from server, let's begin");
-                } else if (data.equals("exit")) {
-                    Dialogs.createAlertOpponentExit();
-                    controller.setHasOpponent(false);
-                    controller.reset();
-                    controller.sendInfo("kill", null, false);
-                } else if (data.toString().contains(",")) {
-                    String[] text = data.toString().split(",");
-                    controller.setGotAnswer(true);
-                    controller.markShotFromOpponent(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
-                }
+                } else processData(str);
             });
         });
+    }
+
+    private void processData(String str) {
+        if (str.equals("exit")) {
+            try {
+                Dialogs.createAlertOpponentExit();
+            } catch (IllegalStateException e) {
+            }
+            controller.setHasOpponent(false);
+            controller.sendInfo("kill", null, true);
+        } else if (checkString(str)) {
+            String[] text = str.split(",");
+            controller.setGotAnswer(true);
+            controller.markShotFromOpponent(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
+        } else {
+            controller.setTxtLoggingOppMove(str);
+        }
+    }
+
+    private boolean checkString(String str) {
+        String digits = "0123456789";
+        return str.contains(",") && str.split(",").length == 3
+                && str.split(",")[0].length() == 1 && digits.contains(str.split(",")[0])
+                && str.split(",")[1].length() == 1 && digits.contains(str.split(",")[1]);
     }
 
 //    @Override
@@ -87,11 +95,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         List<String> params = getParameters().getRaw();
-        if (params.size() > 0 && params.get(0).substring(0, "Server".length()).equals("Server")) {
+        if (params.size() > 0 && params.get(0).trim().equals("Server")) {
             isServer = true;
-        } else if (params.size() > 0 && params.get(0).substring(0, "Client".length()).equals("Client")) {
+        } else if (params.size() > 0 && params.get(0).equals("Client")) {
             isServer = false;
         } else {
+            Dialogs.createAlertWrongParams();
             System.out.println("Wrong params!");
             return;
         }

@@ -26,7 +26,8 @@
     </top>
 
     <left>
-        <GridPane fx:id="gridBattleFieldOpponent" alignment="center" hgap="1.5" vgap="1.5" prefWidth="400" minWidth="400"
+        <GridPane fx:id="gridBattleFieldOpponent" alignment="center" hgap="1.5" vgap="1.5" prefWidth="400"
+                  minWidth="400"
                   style="-fx-background-color: aquamarine;">
             <padding>
                 <Insets top="5" right="10" bottom="10" left="10"/>
@@ -125,12 +126,28 @@
     </right>
 
     <bottom>
-        <VBox prefWidth="200" prefHeight="150" maxWidth="250" minHeight="100" maxHeight="200">
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="150" prefHeight="150" minHeight="100"
-                        maxHeight="200">
-                <Text fx:id="txtLogging" wrappingWidth="200"/>
-            </ScrollPane>
-        </VBox>
+        <HBox prefWidth="600" minWidth="600" prefHeight="150" maxWidth="600" minHeight="100" maxHeight="200">
+            <VBox prefWidth="250" maxWidth="300">
+                <padding>
+                    <Insets top="10" bottom="5" left="15" right="15"/>
+                </padding>
+                <Label> Your moves</Label>
+                <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200" prefHeight="160" minHeight="100"
+                            maxHeight="200">
+                    <Text fx:id="txtLoggingMyMove" wrappingWidth="160"/>
+                </ScrollPane>
+            </VBox>
+            <VBox prefWidth="250" maxWidth="300">
+                <padding>
+                    <Insets top="10" bottom="5" left="15" right="15"/>
+                </padding>
+                <Label> Opponent's moves</Label>
+                <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200" prefHeight="160" minHeight="100"
+                            maxHeight="200">
+                    <Text fx:id="txtLoggingOppMove" wrappingWidth="160"/>
+                </ScrollPane>
+            </VBox>
+        </HBox>
     </bottom>
 
 </BorderPane>

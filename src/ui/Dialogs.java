@@ -14,6 +14,17 @@ public class Dialogs {
     private static boolean isBadHost = true;
 
     /**
+     * Creates alert that your opponent has finished game.
+     */
+    public static void createAlertStartGame() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Start game");
+        alert.setHeaderText(null);
+        alert.setContentText("The opponent appeared. Let's start game!");
+        alert.showAndWait();
+    }
+
+    /**
      * Creates alert that you can't make move before your opponent's answer.
      */
     public static void createAlertOpponentMove() {
@@ -21,6 +32,17 @@ public class Dialogs {
         alert.setTitle("Patience");
         alert.setHeaderText(null);
         alert.setContentText("You must wait for the opponent to make a move");
+        alert.showAndWait();
+    }
+
+    /**
+     * Creates alert that you can't make move before your opponent's answer.
+     */
+    public static void createAlertWrongParams() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Wrong params");
+        alert.setHeaderText(null);
+        alert.setContentText("You should specify a parameter: Server or Client");
         alert.showAndWait();
     }
 
@@ -42,7 +64,7 @@ public class Dialogs {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("End");
         alert.setHeaderText(null);
-        alert.setContentText("Your opponent left the game.");
+        alert.setContentText("Your opponent is out of the game, so the app will close.");
         alert.showAndWait();
     }
 

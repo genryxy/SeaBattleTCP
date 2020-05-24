@@ -21,7 +21,7 @@ public class Controller {
     private Ocean ocean;
     private int x;
     private int y;
-    private StringBuilder loggingMsg = new StringBuilder();
+    private StringBuilder myMoveLoggingMsg = new StringBuilder();
     private NetworkConnection connection;
     private Boolean isGotAnswer;
     private Boolean hasOpponent;
@@ -31,7 +31,9 @@ public class Controller {
     @FXML
     private TextField txtXCoord;
     @FXML
-    private Text txtLogging;
+    private Text txtLoggingMyMove;
+    @FXML
+    private Text txtLoggingOppMove;
     @FXML
     private Text txtInfo;
     @FXML
@@ -67,7 +69,7 @@ public class Controller {
     public void initializeAll(NetworkConnection connection) {
         this.connection = connection;
         // Waiting for a new thread to be created
-        while (hasOpponent && !connection.isCreated());
+        while (hasOpponent && !connection.isCreated()) ;
         if (hasOpponent) {
             sendInfo("Client", null, true);
         }
@@ -171,13 +173,13 @@ public class Controller {
         }
     }
 
-    public void sendInfo(String info, Button btn, boolean isHit) {
+    public void sendInfo(String info, Button btn, boolean isAuxiliary) {
         try {
             connection.send(info);
-            if (!isHit && btn.getText().equals("-")) {
+            if (!isAuxiliary && btn.getText().equals("-")) {
                 setGotAnswer(false);
             }
-//            System.out.println(row + "," + column + "," + btn.getText());
+//            System.out.println(info);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -219,7 +221,7 @@ public class Controller {
             }
 
             if (ocean.getShipsArray()[row][column].isAlreadyFired(row, column)) {
-                loggingMsg.append("attempt to shoot the marked cell\n");
+                myMoveLoggingMsg.append("attempt to shoot the marked cell\n");
                 Dialogs.createAlertRepeatedShot();
             } else {
                 if (ocean.shootAt(row, column)) {
@@ -232,9 +234,9 @@ public class Controller {
                     markAreaAroundShip(ocean.getShipsArray()[row][column]);
                 }
                 setTxtInfo(createInfoTextAboutShot());
-                loggingMsg.append(ocean.getShotsFired()).append(". Move: ").append(row)
+                myMoveLoggingMsg.append(ocean.getShotsFired()).append(". Move: ").append(row)
                         .append(",").append(column).append("\n");
-                loggingMsg.append(ocean.getInfoAboutShot());
+                myMoveLoggingMsg.append(ocean.getInfoAboutShot());
 
                 sendInfo(row + "," + column + "," + btn.getText(), btn, false);
 
@@ -244,7 +246,8 @@ public class Controller {
                     }
                 }
             }
-            setTxtLogging(loggingMsg.toString());
+            setTxtLoggingMyMove(myMoveLoggingMsg.toString());
+            sendInfo(myMoveLoggingMsg.toString(), null, true);
         } else {
             if (Dialogs.createAlertPlayAgain(true)) {
                 reset();
@@ -274,8 +277,9 @@ public class Controller {
             }
         }
         setTxtInfo(createInfoTextAboutShot());
-        loggingMsg = new StringBuilder();
-        setTxtLogging(loggingMsg.toString());
+        myMoveLoggingMsg = new StringBuilder();
+        setTxtLoggingMyMove(myMoveLoggingMsg.toString());
+        sendInfo(myMoveLoggingMsg.toString(), null, true);
     }
 
     /**
@@ -337,12 +341,21 @@ public class Controller {
     }
 
     /**
-     * It sets text in the Text txtLogging from .fxml
+     * It sets text in the Text txtLoggingOppMove from .fxml
      *
      * @param text The content of Text.
      */
-    private void setTxtLogging(String text) {
-        txtLogging.setText(text);
+    public void setTxtLoggingOppMove(String text) {
+        txtLoggingOppMove.setText(text);
+    }
+
+    /**
+     * It sets text in the Text txtLoggingMyMove from .fxml
+     *
+     * @param text The content of Text.
+     */
+    private void setTxtLoggingMyMove(String text) {
+        txtLoggingMyMove.setText(text);
     }
 
     /**

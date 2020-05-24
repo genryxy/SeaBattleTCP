@@ -1,8 +1,5 @@
 package connection;
 
-import javafx.application.Platform;
-import ui.Dialogs;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -79,7 +76,7 @@ public abstract class NetworkConnection {
                     }
                 }
             } catch (ConnectException e) {
-                System.out.println("can't connect");
+                System.out.println("Server doesn't exit");
                 System.exit(0);
             } catch (Exception e) {
                 System.out.println("exit");

@@ -377,7 +377,7 @@
       <workItem from="1586590480402" duration="655000" />
       <workItem from="1590091133881" duration="33000" />
       <workItem from="1590222614234" duration="266000" />
-      <workItem from="1590222927601" duration="36787000" />
+      <workItem from="1590222927601" duration="43295000" />
     </task>
     <task id="LOCAL-00001" summary="Moved methods from Main to Controller, added changing color after hit and new game">
       <created>1586377727893</created>
@@ -416,28 +416,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/ui/Controller.java</url>
-          <line>175</line>
+          <line>177</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/ui/Main.java</url>
-          <line>53</line>
-          <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/ui/Main.java</url>
-          <line>32</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/connection/NetworkConnection.java</url>
-          <line>32</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/connection/NetworkConnection.java</url>
-          <line>67</line>
-          <option name="timeStamp" value="39" />
+          <url>file://$PROJECT_DIR$/src/ui/Controller.java</url>
+          <line>162</line>
+          <option name="timeStamp" value="41" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
