@@ -14,6 +14,21 @@ public class Dialogs {
     private static boolean isBadHost = true;
 
     /**
+     * User can choose how to place all ships (randomly or manually).
+     *
+     * @return true - randomly, false - manually placement
+     */
+    public static boolean createAlertChoicePlacement() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Choice");
+        alert.setHeaderText(null);
+        alert.setContentText("Do you want to place ships randomly? " +
+                "(ok - randomly, cancel - manually)");
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.get() == ButtonType.CANCEL;
+    }
+
+    /**
      * Creates alert that your opponent has finished game.
      */
     public static void createAlertStartGame() {
@@ -21,6 +36,28 @@ public class Dialogs {
         alert.setTitle("Start game");
         alert.setHeaderText(null);
         alert.setContentText("The opponent appeared. Let's start game!");
+        alert.showAndWait();
+    }
+
+    /**
+     * Creates alert that user put all ships and should start.
+     */
+    public static void createAlertPutAllShips() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Start game");
+        alert.setHeaderText(null);
+        alert.setContentText("You put all ships. You should start a game.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Creates alert that you can't put ship at this place.
+     */
+    public static void createAlertBadPlace() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Impossible place");
+        alert.setHeaderText(null);
+        alert.setContentText("You can't put a ship here. Please, try another place!");
         alert.showAndWait();
     }
 

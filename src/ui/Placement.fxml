@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<BorderPane fx:controller="ui.PlacementController" xmlns:fx="http://javafx.com/fxml"
+            prefHeight="600" prefWidth="700" minWidth="700">
+
+    <bottom>
+
+    </bottom>
+
+    <center>
+        <VBox>
+            <GridPane fx:id="gridBattleField" alignment="center" hgap="1.5" vgap="1.5" prefWidth="400" minWidth="400"
+                      prefHeight="450"
+                      style="-fx-background-color: ghostwhite;">
+                <padding>
+                    <Insets top="5" right="10" bottom="10" left="20"/>
+                </padding>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="40.0"
+                                       halignment="CENTER"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.5" prefWidth="40.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="5.0" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                    <RowConstraints vgrow="SOMETIMES" minHeight="10.0" percentHeight="9.5" prefHeight="40.0"/>
+                </rowConstraints>
+            </GridPane>
+        </VBox>
+    </center>
+
+    <right>
+        <VBox minWidth="250">
+            <padding>
+                <Insets top="5" right="5" bottom="10" left="15"/>
+            </padding>
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="250" prefHeight="200">
+                <padding>
+                    <Insets top="5" bottom="10"/>
+                </padding>
+                <Text fx:id="txtHint" lineSpacing="10"/>
+            </ScrollPane>
+
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="250" prefHeight="200">
+                <padding>
+                    <Insets top="10" bottom="15"/>
+                </padding>
+                <Text fx:id="txtReadyShips" lineSpacing="10"/>
+            </ScrollPane>
+
+            <Text fx:id="txtCurrOrientation" lineSpacing="10"/>
+            <Button text="Change orientation"
+                    onAction="#handleBtnChangeOrientation">
+                <padding>
+                    <Insets top="15" bottom="15"/>
+                </padding>
+            </Button>
+        </VBox>
+    </right>
+
+</BorderPane>

@@ -89,10 +89,10 @@ public class Ship {
         if (row < 0 || row > ocean.SIZE - 1 || column < 0 || column > ocean.SIZE - 1) {
             return false;
         }
-        if (horizontal && (column + length) >= ocean.SIZE) {
+        if (horizontal && (column + length) > ocean.SIZE) {
             return false;
         }
-        if (!horizontal && (row + length) >= ocean.SIZE) {
+        if (!horizontal && (row + length) > ocean.SIZE) {
             return false;
         }
 

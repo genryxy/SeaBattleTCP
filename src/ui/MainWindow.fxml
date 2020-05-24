@@ -14,7 +14,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <BorderPane fx:controller="ui.Controller" xmlns:fx="http://javafx.com/fxml"
-            prefHeight="600" prefWidth="100" minWidth="1000" maxWidth="1000">
+            prefHeight="600" prefWidth="1000" minWidth="1000" maxWidth="1000">
     <top>
         <StackPane minHeight="5">
             <padding>

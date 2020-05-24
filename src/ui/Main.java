@@ -1,6 +1,7 @@
 package ui;
 
 
+import battleship.Ocean;
 import connection.Client;
 import connection.NetworkConnection;
 import connection.Server;
@@ -19,7 +20,9 @@ public class Main extends Application {
     private boolean isServer = true;
 
     private Controller controller;
+    private PlacementController placeController;
     private NetworkConnection connection;
+    private Ocean createdOcean;
 
     private Server createServer(int port) {
         return new Server(port, data -> {
@@ -30,7 +33,7 @@ public class Main extends Application {
                     controller.setHasOpponent(true);
                     controller.sendInfo("Server", null, true);
                     Dialogs.createAlertStartGame();
-                    System.out.println("get msg from client, let's begin");
+//                    System.out.println("get msg from client, let's begin");
                 } else if (str.contains("Winner: Client")) {
                     controller.sendInfo(str + "\n\n" + controller.createInfoTextAboutGame(), null, true);
                     Dialogs.createAlertTotalResult(str + "\n\n" + controller.createInfoTextAboutGame());
@@ -51,7 +54,7 @@ public class Main extends Application {
                 if (str.equals("Server")) {
                     controller.setHasOpponent(true);
                     Dialogs.createAlertStartGame();
-                    System.out.println("get msg from server, let's begin");
+//                    System.out.println("get msg from server, let's begin");
                 } else if (str.contains("Winner: Server")) {
                     controller.sendInfo(str + "\n\n" + controller.createInfoTextAboutGame(), null, true);
                     Dialogs.createAlertTotalResult(str + "\n\n" + controller.createInfoTextAboutGame());
@@ -88,11 +91,6 @@ public class Main extends Application {
                 && str.split(",")[1].length() == 1 && digits.contains(str.split(",")[1]);
     }
 
-//    @Override
-//    public void init() {
-//        connection.startConnection();
-//    }
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -106,6 +104,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Boolean isRandomly;
         List<String> params = getParameters().getRaw();
         if (params.size() > 0 && params.get(0).trim().equals("Server")) {
             isServer = true;
@@ -122,6 +121,7 @@ public class Main extends Application {
         }
         connection = isServer ? createServer(Integer.parseInt(vals.substring(0, vals.length() - 1))) :
                 createClient(Integer.parseInt(vals.split(",")[0]), vals.split(",")[1]);
+        connection.startConnection();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
         Parent root = loader.load();
@@ -130,13 +130,30 @@ public class Main extends Application {
         primaryStage.setMinWidth(1000);
         primaryStage.setMaxWidth(1000);
         primaryStage.setTitle(isServer ? "Battleship_Server" : "Battleship_Client");
-        primaryStage.setScene(new Scene(root, 1000, 600));
-        primaryStage.show();
         controller = loader.getController();
+        controller.setConnection(connection);
+
+        isRandomly = Dialogs.createAlertChoicePlacement();
+        if (isRandomly) {
+            PlacementStage placementStage = new PlacementStage();
+            FXMLLoader loaderPlacement = new FXMLLoader(getClass().getResource("Placement.fxml"));
+
+            Parent rootPlacement = loaderPlacement.load();
+            placementStage.setMinHeight(500);
+            placementStage.setMinWidth(700);
+            placementStage.setTitle("Placement ships");
+            placementStage.setScene(new Scene(rootPlacement, 700, 600));
+
+            placeController = loaderPlacement.getController();
+            placeController.initializeAll();
+            createdOcean = placementStage.showAndReturn(placeController);
+        }
+
         controller.setGotAnswer(isServer);
         controller.setIsServer(isServer);
-        controller.setHasOpponent(!isServer);
-        connection.startConnection();
-        controller.initializeAll(connection);
+//        controller.setHasOpponent(!isServer);
+        controller.initializeOcean(createdOcean);
+        primaryStage.setScene(new Scene(root, 1000, 600));
+        primaryStage.show();
     }
 }

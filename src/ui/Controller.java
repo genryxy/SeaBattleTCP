@@ -5,11 +5,10 @@ import battleship.Ship;
 import connection.NetworkConnection;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -25,7 +24,7 @@ public class Controller {
     private NetworkConnection connection;
     private Boolean isGotAnswer;
     private Boolean isServer;
-    private Boolean hasOpponent;
+    private boolean hasOpponent;
 
     @FXML
     private TextField txtYCoord;
@@ -56,26 +55,37 @@ public class Controller {
         }
     }
 
-//    @FXML
-//    private void handleBtnPlayAgain() {
-//        if (Dialogs.createAlertPlayAgain(ocean.isGameOver())) {
-//            reset();
-//        }
-//    }
-
     /**
      * Creates instance of Ocean and places ships.
      * Adds buttons to the GridPane.
      */
-    public void initializeAll(NetworkConnection connection) {
-        this.connection = connection;
+    public void initializeOcean(Ocean createdOcen) {
         // Waiting for a new thread to be created
-        while (hasOpponent && !connection.isCreated()) ;
-        if (hasOpponent) {
+        while (!isServer && hasOpponent && !connection.isCreated()) ;
+        if (!isServer) {
             sendInfo("Client", null, true);
         }
-        ocean = new Ocean();
-        ocean.placeAllShipsRandomly();
+        if (createdOcen == null) {
+            ocean = new Ocean();
+            ocean.placeAllShipsRandomly();
+        } else {
+            ocean = createdOcen;
+        }
+        initOpponentField();
+        initMyField();
+
+        getTxtXCoord().requestFocus();
+        setTxtInfo(createInfoTextAboutGame());
+    }
+
+    public void setConnection(NetworkConnection connection) {
+        this.connection = connection;
+    }
+
+    /**
+     * Initializes the field of the opponent. Creates and adds buttons and labels.
+     */
+    private void initOpponentField() {
         for (int i = 0; i < ocean.SIZE + 1; i++) {
             for (int j = 0; j < ocean.SIZE + 1; j++) {
                 if (i == 0 && j == 0) {
@@ -89,7 +99,7 @@ public class Controller {
                     GridPane.setHalignment(lbl, HPos.CENTER);
                     getGridBattleFieldOpponent().add(lbl, i, 0);
                 } else {
-                    Button btn = createButton("");
+                    Button btn = Utils.createButton("");
                     btn.setOnAction(actionEvent -> {
                         clickListener(btn);
                     });
@@ -97,7 +107,12 @@ public class Controller {
                 }
             }
         }
+    }
 
+    /**
+     * Initializes the field of the current user. Creates and adds buttons and labels.
+     */
+    private void initMyField() {
         for (int i = 0; i < ocean.SIZE + 1; i++) {
             for (int j = 0; j < ocean.SIZE + 1; j++) {
                 if (i == 0 && j == 0) {
@@ -111,12 +126,10 @@ public class Controller {
                     GridPane.setHalignment(lbl, HPos.CENTER);
                     getGridBattleFieldMe().add(lbl, i, 0);
                 } else {
-                    getGridBattleFieldMe().add(createButton(""), j, i);
+                    getGridBattleFieldMe().add(Utils.createButton(""), j, i);
                 }
             }
         }
-        getTxtXCoord().requestFocus();
-        setTxtInfo(createInfoTextAboutGame());
     }
 
     /**
@@ -162,15 +175,15 @@ public class Controller {
         btn.fire();
         btn.setText(text);
         if (text.equals("x")) {
-            setBtnBackground(btn, Color.RED);
+            Utils.setBtnBackground(btn, Color.RED);
             // Opponent should continue
             setGotAnswer(false);
         } else if (text.equals("S")) {
-            setBtnBackground(btn, Color.TOMATO);
+            Utils.setBtnBackground(btn, Color.TOMATO);
             // Opponent should continue
             setGotAnswer(false);
         } else {
-            setBtnBackground(btn, Color.LIGHTGRAY);
+            Utils.setBtnBackground(btn, Color.LIGHTGRAY);
         }
     }
 
@@ -184,20 +197,6 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Creates a new instance of the button with specified parameters.
-     *
-     * @param text The content of the button.
-     * @return The new instance of button.
-     */
-    private Button createButton(String text) {
-        Button btn = new Button(text);
-        setBtnBackground(btn, Color.LIGHTBLUE);
-        // Allows to resize the button.
-        btn.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        return btn;
     }
 
     /**
@@ -226,9 +225,9 @@ public class Controller {
                 Dialogs.createAlertRepeatedShot();
             } else {
                 if (ocean.shootAt(row, column)) {
-                    setBtnBackground(btn, Color.TOMATO);
+                    Utils.setBtnBackground(btn, Color.TOMATO);
                 } else {
-                    setBtnBackground(btn, Color.SILVER);
+                    Utils.setBtnBackground(btn, Color.SILVER);
                 }
                 btn.setText(ocean.getShipsArray()[row][column].toString());
                 if (ocean.getShipsArray()[row][column].isSunk()) {
@@ -264,14 +263,14 @@ public class Controller {
             if (obj instanceof Button) {
                 Button btn = (Button) obj;
                 btn.setText("");
-                setBtnBackground(btn, Color.LIGHTBLUE);
+                Utils.setBtnBackground(btn, Color.LIGHTBLUE);
             }
         }
         for (Object obj : getGridBattleFieldMe().getChildren()) {
             if (obj instanceof Button) {
                 Button btn = (Button) obj;
                 btn.setText("");
-                setBtnBackground(btn, Color.LIGHTBLUE);
+                Utils.setBtnBackground(btn, Color.LIGHTBLUE);
             }
         }
         setTxtInfo(createInfoTextAboutGame());
@@ -309,25 +308,14 @@ public class Controller {
                 // Children store in ObservableList<Node>.
                 Button currBtn = (Button) getGridBattleFieldOpponent().getChildren().get((i + 1) * ocean.SIZE + j + (i + 1));
                 currBtn.setText(ocean.getShipsArray()[i][j].toString());
-                setBtnBackground(currBtn, Color.SILVER);
+                Utils.setBtnBackground(currBtn, Color.SILVER);
                 if (ocean.getShipsArray()[i][j].isSunk()) {
-                    setBtnBackground(currBtn, Color.RED);
+                    Utils.setBtnBackground(currBtn, Color.RED);
                 }
 
                 sendInfo(i + "," + j + "," + currBtn.getText(), null, true);
             }
         }
-    }
-
-    /**
-     * It sets the button's background. It helps to have the similar
-     * values of corner radius and insets.
-     *
-     * @param btn   The instance of button for changing.
-     * @param color The required color of background.
-     */
-    private void setBtnBackground(Button btn, Color color) {
-        btn.setBackground(new Background(new BackgroundFill(color, new CornerRadii(3), new Insets(0.5))));
     }
 
     public void setGotAnswer(Boolean gotAnswer) {
@@ -341,7 +329,6 @@ public class Controller {
     public void setIsServer(Boolean isServer) {
         this.isServer = isServer;
     }
-
 
     /**
      * It sets text in the Text txtLoggingOppMove from .fxml

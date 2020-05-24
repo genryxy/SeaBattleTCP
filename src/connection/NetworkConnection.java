@@ -29,7 +29,7 @@ public abstract class NetworkConnection {
         try {
             connectionThread.out.writeObject(data);
         } catch (SocketException e) {
-            System.out.println("Socket was closed! Buy");
+            System.out.println("Opponent's socket was closed! Buy");
             System.exit(0);
         }
     }
