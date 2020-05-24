@@ -76,6 +76,11 @@ public class Controller {
         setTxtInfo(createInfoTextAboutGame());
     }
 
+    /**
+     * It sets connection of the server and of the client.
+     *
+     * @param connection The instance of client or server.
+     */
     public void setConnection(NetworkConnection connection) {
         this.connection = connection;
     }
@@ -194,10 +199,11 @@ public class Controller {
     }
 
     /**
+     * It sends info from client to server and from server to client.
      *
-     * @param info
-     * @param btn
-     * @param isAuxiliary
+     * @param info        Sending string.
+     * @param btn         Instance of button to check the content. null - otherwise
+     * @param isAuxiliary false - it was shot, true - otherwise
      */
     public void sendInfo(String info, Button btn, boolean isAuxiliary) {
         try {
