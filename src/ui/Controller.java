@@ -15,7 +15,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
-import java.util.Optional;
 
 
 public class Controller {
@@ -24,7 +23,8 @@ public class Controller {
     private int y;
     private StringBuilder loggingMsg = new StringBuilder();
     private NetworkConnection connection;
-    private Boolean isGetAnswer;
+    private Boolean isGotAnswer;
+    private Boolean hasOpponent;
 
     @FXML
     private TextField txtYCoord;
@@ -35,7 +35,7 @@ public class Controller {
     @FXML
     private Text txtInfo;
     @FXML
-    private GridPane gridBattleFieldRival;
+    private GridPane gridBattleFieldOpponent;
     @FXML
     private GridPane gridBattleFieldMe;
 
@@ -55,7 +55,9 @@ public class Controller {
 
     @FXML
     private void handleBtnPlayAgain() {
-        createAlertPlayAgain(ocean.isGameOver());
+        if (Dialogs.createAlertPlayAgain(ocean.isGameOver())) {
+            reset();
+        }
     }
 
     /**
@@ -64,6 +66,11 @@ public class Controller {
      */
     public void initializeAll(NetworkConnection connection) {
         this.connection = connection;
+        // Waiting for a new thread to be created
+        while (hasOpponent && !connection.isCreated());
+        if (hasOpponent) {
+            sendInfo("Client", null, true);
+        }
         ocean = new Ocean();
         ocean.placeAllShipsRandomly();
         for (int i = 0; i < ocean.SIZE + 1; i++) {
@@ -73,18 +80,17 @@ public class Controller {
                 } else if (i == 0) {
                     Label lbl = new Label(String.valueOf(j - 1));
                     GridPane.setHalignment(lbl, HPos.CENTER);
-                    getGridBattleFieldRival().add(lbl, 0, j);
+                    getGridBattleFieldOpponent().add(lbl, 0, j);
                 } else if (j == 0) {
                     Label lbl = new Label(String.valueOf(i - 1));
                     GridPane.setHalignment(lbl, HPos.CENTER);
-                    getGridBattleFieldRival().add(lbl, i, 0);
+                    getGridBattleFieldOpponent().add(lbl, i, 0);
                 } else {
                     Button btn = createButton("");
                     btn.setOnAction(actionEvent -> {
                         clickListener(btn);
                     });
-
-                    getGridBattleFieldRival().add(btn, j, i);
+                    getGridBattleFieldOpponent().add(btn, j, i);
                 }
             }
         }
@@ -137,29 +143,43 @@ public class Controller {
     public void doShootAtCoordinates(int row, int column) {
         // GridPane contains labels in the first row and in the first column (except
         // position [0,0]). Shape(11x11). Children store in ObservableList<Node>.
-        Button btn = ((Button) getGridBattleFieldRival().getChildren().get((row + 1) * ocean.SIZE + column + (row + 1)));
-        btn.fire();
-        try {
-            connection.send(row + "," + column + "," + btn.getText());
-            System.out.println(row + "," + column + "," + btn.getText());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!isGotAnswer && !hasOpponent) {
+            Dialogs.createAlertOpponentMove();
+            return;
         }
+        Button btn = ((Button) getGridBattleFieldOpponent().getChildren().get((row + 1) * ocean.SIZE + column + (row + 1)));
+        btn.fire();
+        sendInfo(row + "," + column + "," + btn.getText(), btn, false);
     }
 
-    public void markShotFromRival(int row, int column, String text) {
+    public void markShotFromOpponent(int row, int column, String text) {
         // GridPane contains labels in the first row and in the first column (except
         // position [0,0]). Shape(11x11). Children store in ObservableList<Node>.
-        System.out.println("let's mark: " + row + ", " + column + ", " + text);
         Button btn = ((Button) getGridBattleFieldMe().getChildren().get((row + 1) * ocean.SIZE + column + (row + 1)));
         btn.fire();
         btn.setText(text);
         if (text.equals("x")) {
             setBtnBackground(btn, Color.RED);
+            // Opponent should continue
+            setGotAnswer(false);
         } else if (text.equals("S")) {
             setBtnBackground(btn, Color.TOMATO);
+            // Opponent should continue
+            setGotAnswer(false);
         } else {
             setBtnBackground(btn, Color.LIGHTGRAY);
+        }
+    }
+
+    public void sendInfo(String info, Button btn, boolean isHit) {
+        try {
+            connection.send(info);
+            if (!isHit && btn.getText().equals("-")) {
+                setGotAnswer(false);
+            }
+//            System.out.println(row + "," + column + "," + btn.getText());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -184,14 +204,23 @@ public class Controller {
      * @param btn The instance of Button for determination of coordinates in GridPane.
      */
     private void clickListener(Button btn) {
+        if (!hasOpponent) {
+            Dialogs.createAlertNotOpponent();
+            return;
+        }
         if (!ocean.isGameOver()) {
             // We need to subtract 1 because GridPane store labels in the
             // first row and in the first column.
             int row = GridPane.getRowIndex(btn) - 1;
             int column = GridPane.getColumnIndex(btn) - 1;
+            if (!isGotAnswer) {
+                Dialogs.createAlertOpponentMove();
+                return;
+            }
+
             if (ocean.getShipsArray()[row][column].isAlreadyFired(row, column)) {
                 loggingMsg.append("attempt to shoot the marked cell\n");
-                createAlertRepeatedShot();
+                Dialogs.createAlertRepeatedShot();
             } else {
                 if (ocean.shootAt(row, column)) {
                     setBtnBackground(btn, Color.TOMATO);
@@ -207,42 +236,19 @@ public class Controller {
                         .append(",").append(column).append("\n");
                 loggingMsg.append(ocean.getInfoAboutShot());
 
-                try {
-                    connection.send(row + "," + column + "," + btn.getText());
-                    System.out.println(row + "," + column + "," + btn.getText());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                sendInfo(row + "," + column + "," + btn.getText(), btn, false);
 
                 if (ocean.isGameOver()) {
-                    createAlertPlayAgain(true);
+                    if (Dialogs.createAlertPlayAgain(true)) {
+                        reset();
+                    }
                 }
             }
             setTxtLogging(loggingMsg.toString());
         } else {
-            createAlertPlayAgain(true);
-        }
-    }
-
-    /**
-     * Creates alert that confirms the end of the game. If user press 'ok',
-     * he'll begin a new game. Otherwise nothing happens.
-     *
-     * @param isGameOver It defines the content of the alert (again or new game).
-     */
-    private void createAlertPlayAgain(boolean isGameOver) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Choice");
-        alert.setHeaderText(null);
-        if (isGameOver) {
-            alert.setContentText("The game is over! Do you want to play again?");
-        } else {
-            alert.setContentText("Do you want to start a new game?");
-        }
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            reset();
+            if (Dialogs.createAlertPlayAgain(true)) {
+                reset();
+            }
         }
     }
 
@@ -250,10 +256,17 @@ public class Controller {
      * Creates a new instance of Ocean.Resets values of fields.
      * Reset the background color of the buttons.
      */
-    private void reset() {
+    public void reset() {
         ocean = new Ocean();
         ocean.placeAllShipsRandomly();
-        for (Object obj : getGridBattleFieldRival().getChildren()) {
+        for (Object obj : getGridBattleFieldOpponent().getChildren()) {
+            if (obj instanceof Button) {
+                Button btn = (Button) obj;
+                btn.setText("");
+                setBtnBackground(btn, Color.LIGHTBLUE);
+            }
+        }
+        for (Object obj : getGridBattleFieldMe().getChildren()) {
             if (obj instanceof Button) {
                 Button btn = (Button) obj;
                 btn.setText("");
@@ -263,17 +276,6 @@ public class Controller {
         setTxtInfo(createInfoTextAboutShot());
         loggingMsg = new StringBuilder();
         setTxtLogging(loggingMsg.toString());
-    }
-
-    /**
-     * Creates alert with warning about repeating shot in the cell.
-     */
-    private void createAlertRepeatedShot() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning");
-        alert.setHeaderText(null);
-        alert.setContentText("You've already fired at this cell. Please, try to shoot at another cell.");
-        alert.showAndWait();
     }
 
     /**
@@ -303,18 +305,14 @@ public class Controller {
         for (int i = Math.max(0, ship.getBowRow() - 1); i <= Math.min(ocean.SIZE - 1, ship.getBowRow() + addRow); i++) {
             for (int j = Math.max(0, ship.getBowColumn() - 1); j <= Math.min(ocean.SIZE - 1, ship.getBowColumn() + addColumn); j++) {
                 // Children store in ObservableList<Node>.
-                Button currBtn = (Button) getGridBattleFieldRival().getChildren().get((i + 1) * ocean.SIZE + j + (i + 1));
+                Button currBtn = (Button) getGridBattleFieldOpponent().getChildren().get((i + 1) * ocean.SIZE + j + (i + 1));
                 currBtn.setText(ocean.getShipsArray()[i][j].toString());
                 setBtnBackground(currBtn, Color.SILVER);
                 if (ocean.getShipsArray()[i][j].isSunk()) {
                     setBtnBackground(currBtn, Color.RED);
                 }
 
-                try {
-                    connection.send(i + "," + j + "," + currBtn.getText());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                sendInfo(i + "," + j + "," + currBtn.getText(), null, true);
             }
         }
     }
@@ -328,6 +326,14 @@ public class Controller {
      */
     private void setBtnBackground(Button btn, Color color) {
         btn.setBackground(new Background(new BackgroundFill(color, new CornerRadii(3), new Insets(0.5))));
+    }
+
+    public void setGotAnswer(Boolean gotAnswer) {
+        isGotAnswer = gotAnswer;
+    }
+
+    public void setHasOpponent(Boolean hasOpponent) {
+        this.hasOpponent = hasOpponent;
     }
 
     /**
@@ -349,10 +355,10 @@ public class Controller {
     }
 
     /**
-     * @return Return the reference on the GridPane (battlefield of the rival).
+     * @return Return the reference on the GridPane (battlefield of the opponent).
      */
-    private GridPane getGridBattleFieldRival() {
-        return gridBattleFieldRival;
+    private GridPane getGridBattleFieldOpponent() {
+        return gridBattleFieldOpponent;
     }
 
     /**

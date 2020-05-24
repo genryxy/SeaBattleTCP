@@ -1,7 +1,5 @@
 package ui;
 
-//import com.connection.Client;
-//import com.connection.Server;
 
 import connection.Client;
 import connection.NetworkConnection;
@@ -13,8 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -30,43 +26,44 @@ public class Main extends Application {
     private Controller controller;
     private NetworkConnection connection;
 
-    private Parent createContent() {
-        messages.setPrefHeight(450);
-        TextField input = new TextField();
-        input.setOnAction(actionEvent -> {
-            String msg = isServer ? "Server: " : "Client: ";
-            msg += input.getText();
-            input.clear();
-
-            messages.appendText(msg + "\n");
-            try {
-                connection.send(msg);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        VBox root = new VBox(20, messages, input);
-        root.setPrefSize(500, 500);
-        return root;
-    }
-
-    private Server createServer() {
-        return new Server(4080, data -> {
+    private Server createServer(int port) {
+        return new Server(port, data -> {
             // Get control back to the ui thread
             Platform.runLater(() -> {
-                String[] text = data.toString().split(",");
-                controller.markShotFromRival(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
+                if (data.equals("Client")) {
+                    controller.setHasOpponent(true);
+                    System.out.println("get msg from client, let's begin");
+                } else if (data.equals("exit")) {
+                    Dialogs.createAlertOpponentExit();
+                    controller.setHasOpponent(false);
+                    controller.reset();
+                    controller.sendInfo("kill", null, false);
+                } else {
+                    String[] text = data.toString().split(",");
+                    controller.setGotAnswer(true);
+                    controller.markShotFromOpponent(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
+                }
             });
         });
     }
 
-    private Client createClient() {
-        return new Client(4080, "localhost", data -> {
+    private Client createClient(int port, String host) {
+        return new Client(port, host, data -> {
             // Get control back to the ui thread
             Platform.runLater(() -> {
-                String[] text = data.toString().split(",");
-                controller.markShotFromRival(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
+                if (data.equals("Server")) {
+                    controller.setHasOpponent(true);
+                    System.out.println("get msg from server, let's begin");
+                } else if (data.equals("exit")) {
+                    Dialogs.createAlertOpponentExit();
+                    controller.setHasOpponent(false);
+                    controller.reset();
+                    controller.sendInfo("kill", null, false);
+                } else if (data.toString().contains(",")) {
+                    String[] text = data.toString().split(",");
+                    controller.setGotAnswer(true);
+                    controller.markShotFromOpponent(Integer.parseInt(text[0]), Integer.parseInt(text[1]), text[2]);
+                }
             });
         });
     }
@@ -82,7 +79,9 @@ public class Main extends Application {
 
     @Override
     public void stop() throws Exception {
-        connection.closeConnection();
+        if (connection != null) {
+            connection.closeConnection();
+        }
     }
 
     @Override
@@ -90,14 +89,19 @@ public class Main extends Application {
         List<String> params = getParameters().getRaw();
         if (params.size() > 0 && params.get(0).substring(0, "Server".length()).equals("Server")) {
             isServer = true;
-            connection = createServer();
         } else if (params.size() > 0 && params.get(0).substring(0, "Client".length()).equals("Client")) {
             isServer = false;
-            connection = createClient();
         } else {
             System.out.println("Wrong params!");
             return;
         }
+        String vals = Dialogs.showInputTextDialog(isServer);
+        if (vals.length() == 0) {
+            return;
+        }
+        connection = isServer ? createServer(Integer.parseInt(vals.substring(0, vals.length() - 1))) :
+                createClient(Integer.parseInt(vals.split(",")[0]), vals.split(",")[1]);
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
         Parent root = loader.load();
         primaryStage.setMinHeight(600);
@@ -108,7 +112,9 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 1000, 600));
         primaryStage.show();
         controller = loader.getController();
-        controller.initializeAll(connection);
+        controller.setGotAnswer(isServer);
+        controller.setHasOpponent(!isServer);
         connection.startConnection();
+        controller.initializeAll(connection);
     }
 }

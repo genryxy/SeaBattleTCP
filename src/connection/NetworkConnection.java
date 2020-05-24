@@ -1,17 +1,23 @@
 package connection;
 
+import javafx.application.Platform;
+import ui.Dialogs;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.function.Consumer;
 
 public abstract class NetworkConnection {
 
     private ConnectionThread connectionThread = new ConnectionThread();
     private Consumer<Serializable> onReceiveCallback;
+    private volatile boolean isCreated;
 
     public NetworkConnection(Consumer<Serializable> onReceiveCallback) {
         this.onReceiveCallback = onReceiveCallback;
@@ -23,13 +29,22 @@ public abstract class NetworkConnection {
     }
 
     public void send(Serializable data) throws IOException {
-        connectionThread.out.writeObject(data);
+        try {
+            connectionThread.out.writeObject(data);
+        } catch (SocketException e) {
+            System.out.println("Socket was closed! Buy");
+            System.exit(0);
+        }
     }
 
     public void closeConnection() throws IOException {
         if (connectionThread.socket != null) {
             connectionThread.socket.close();
         }
+    }
+
+    public boolean isCreated() {
+        return isCreated;
     }
 
     protected abstract boolean isServer();
@@ -45,14 +60,15 @@ public abstract class NetworkConnection {
 
         @Override
         public void run() {
-            try (ServerSocket serverSocket = isServer() ? new ServerSocket(getPort()) : null;
-                 Socket socket = isServer() ? serverSocket.accept() : new Socket(getIP(), getPort());
-                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+            try (ServerSocket serverSocket = isServer() ? new ServerSocket(getPort(), 0) : null;
+                 Socket sock = isServer() ? serverSocket.accept() : new Socket(getIP(), getPort());
+                 ObjectOutputStream out = new ObjectOutputStream(sock.getOutputStream());
+                 ObjectInputStream in = new ObjectInputStream(sock.getInputStream())) {
 
-                this.socket = socket;
+                this.socket = sock;
                 this.out = out;
                 socket.setTcpNoDelay(true);
+                isCreated = true;
 
                 while (true) {
                     if (socket.isClosed()) {
@@ -62,9 +78,12 @@ public abstract class NetworkConnection {
                         onReceiveCallback.accept(data);
                     }
                 }
+            } catch (ConnectException e) {
+                System.out.println("can't connect");
+                System.exit(0);
             } catch (Exception e) {
                 System.out.println("exit");
-//                onReceiveCallback.accept("Connection closed");
+                onReceiveCallback.accept("exit");
                 // e.printStackTrace();
             }
         }
