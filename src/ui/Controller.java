@@ -24,6 +24,7 @@ public class Controller {
     private StringBuilder myMoveLoggingMsg = new StringBuilder();
     private NetworkConnection connection;
     private Boolean isGotAnswer;
+    private Boolean isServer;
     private Boolean hasOpponent;
 
     @FXML
@@ -55,12 +56,12 @@ public class Controller {
         }
     }
 
-    @FXML
-    private void handleBtnPlayAgain() {
-        if (Dialogs.createAlertPlayAgain(ocean.isGameOver())) {
-            reset();
-        }
-    }
+//    @FXML
+//    private void handleBtnPlayAgain() {
+//        if (Dialogs.createAlertPlayAgain(ocean.isGameOver())) {
+//            reset();
+//        }
+//    }
 
     /**
      * Creates instance of Ocean and places ships.
@@ -115,7 +116,7 @@ public class Controller {
             }
         }
         getTxtXCoord().requestFocus();
-        setTxtInfo(createInfoTextAboutShot());
+        setTxtInfo(createInfoTextAboutGame());
     }
 
     /**
@@ -233,7 +234,7 @@ public class Controller {
                 if (ocean.getShipsArray()[row][column].isSunk()) {
                     markAreaAroundShip(ocean.getShipsArray()[row][column]);
                 }
-                setTxtInfo(createInfoTextAboutShot());
+                setTxtInfo(createInfoTextAboutGame());
                 myMoveLoggingMsg.append(ocean.getShotsFired()).append(". Move: ").append(row)
                         .append(",").append(column).append("\n");
                 myMoveLoggingMsg.append(ocean.getInfoAboutShot());
@@ -241,17 +242,14 @@ public class Controller {
                 sendInfo(row + "," + column + "," + btn.getText(), btn, false);
 
                 if (ocean.isGameOver()) {
-                    if (Dialogs.createAlertPlayAgain(true)) {
-                        reset();
-                    }
+                    sendInfo("Winner: " + (isServer ? "Server\n" : "Client\n") + createInfoTextAboutGame(), null, true);
                 }
             }
             setTxtLoggingMyMove(myMoveLoggingMsg.toString());
             sendInfo(myMoveLoggingMsg.toString(), null, true);
+
         } else {
-            if (Dialogs.createAlertPlayAgain(true)) {
-                reset();
-            }
+            sendInfo("Winner: " + (isServer ? "Server\n" : "Client\n") + createInfoTextAboutGame(), null, true);
         }
     }
 
@@ -276,7 +274,7 @@ public class Controller {
                 setBtnBackground(btn, Color.LIGHTBLUE);
             }
         }
-        setTxtInfo(createInfoTextAboutShot());
+        setTxtInfo(createInfoTextAboutGame());
         myMoveLoggingMsg = new StringBuilder();
         setTxtLoggingMyMove(myMoveLoggingMsg.toString());
         sendInfo(myMoveLoggingMsg.toString(), null, true);
@@ -286,7 +284,7 @@ public class Controller {
      * @return Gives some information about the current game. (Number shots,
      * hits, undamaged ships, partially damaged, sunk)
      */
-    private String createInfoTextAboutShot() {
+    public String createInfoTextAboutGame() {
         return "Number shots: " + ocean.getShotsFired() +
                 "\nNumber hits: " + ocean.getHitCount() +
                 "\nUndamaged: " + (10 - ocean.getShipsSunk() - ocean.getShipWrecked()) +
@@ -339,6 +337,11 @@ public class Controller {
     public void setHasOpponent(Boolean hasOpponent) {
         this.hasOpponent = hasOpponent;
     }
+
+    public void setIsServer(Boolean isServer) {
+        this.isServer = isServer;
+    }
+
 
     /**
      * It sets text in the Text txtLoggingOppMove from .fxml

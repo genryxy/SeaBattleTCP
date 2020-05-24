@@ -97,9 +97,19 @@ public class Dialogs {
 
         Optional<ButtonType> result = alert.showAndWait();
         return result.get() == ButtonType.OK;
-//        if (result.get() == ButtonType.OK) {
-//            reset();
-//        }
+    }
+
+    /**
+     * Creates alert that confirms the end of the game. It contains overall statistics.
+     *
+     * @param res Overall statistics of both players.
+     */
+    public static void createAlertTotalResult(String res) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Result");
+        alert.setHeaderText(null);
+        alert.setContentText(res);
+        alert.showAndWait();
     }
 
     public static String showInputTextDialog(boolean isServer) {
@@ -109,7 +119,7 @@ public class Dialogs {
         dialog.setTitle("Settings");
         dialog.setHeaderText("You're " + (isServer ? "Server. " : "Client. ") + "Please, input some info");
 
-        ButtonType okButtonType = new ButtonType("Start", ButtonBar.ButtonData.OK_DONE);
+        ButtonType okButtonType = new ButtonType("Connect", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();

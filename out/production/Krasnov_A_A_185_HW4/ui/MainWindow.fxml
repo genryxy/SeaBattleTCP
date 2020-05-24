@@ -119,8 +119,8 @@
             <VBox spacing="15">
                 <Button text="Shoot"
                         onAction="#handleBtnShoot"/>
-                <Button text="New game"
-                        onAction="#handleBtnPlayAgain"/>
+<!--                <Button text="New game"-->
+<!--                        onAction="#handleBtnPlayAgain"/>-->
             </VBox>
         </VBox>
     </right>

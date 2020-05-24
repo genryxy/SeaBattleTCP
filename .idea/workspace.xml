@@ -135,7 +135,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Client">
+  <component name="RunManager" selected="Application.Client2">
     <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
       <option name="VMOptions" />
       <option name="arguments" />
@@ -377,7 +377,7 @@
       <workItem from="1586590480402" duration="655000" />
       <workItem from="1590091133881" duration="33000" />
       <workItem from="1590222614234" duration="266000" />
-      <workItem from="1590222927601" duration="43295000" />
+      <workItem from="1590222927601" duration="47442000" />
     </task>
     <task id="LOCAL-00001" summary="Moved methods from Main to Controller, added changing color after hit and new game">
       <created>1586377727893</created>
@@ -416,12 +416,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/ui/Controller.java</url>
-          <line>177</line>
+          <line>178</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/ui/Controller.java</url>
-          <line>162</line>
+          <line>163</line>
           <option name="timeStamp" value="41" />
         </line-breakpoint>
       </breakpoints>

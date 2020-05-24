@@ -31,6 +31,11 @@ public class Main extends Application {
                     controller.sendInfo("Server", null, true);
                     Dialogs.createAlertStartGame();
                     System.out.println("get msg from client, let's begin");
+                } else if (str.contains("Winner: Client")) {
+                    controller.sendInfo(str + "\n\n" + controller.createInfoTextAboutGame(), null, true);
+                    Dialogs.createAlertTotalResult(str + "\n\n" + controller.createInfoTextAboutGame());
+                } else if (str.contains("Winner: Server")) {
+                    Dialogs.createAlertTotalResult(str);
                 } else {
                     processData(str);
                 }
@@ -47,7 +52,14 @@ public class Main extends Application {
                     controller.setHasOpponent(true);
                     Dialogs.createAlertStartGame();
                     System.out.println("get msg from server, let's begin");
-                } else processData(str);
+                } else if (str.contains("Winner: Server")) {
+                    controller.sendInfo(str + "\n\n" + controller.createInfoTextAboutGame(), null, true);
+                    Dialogs.createAlertTotalResult(str + "\n\n" + controller.createInfoTextAboutGame());
+                } else if (str.contains("Winner: Client")) {
+                    Dialogs.createAlertTotalResult(str);
+                } else {
+                    processData(str);
+                }
             });
         });
     }
@@ -122,6 +134,7 @@ public class Main extends Application {
         primaryStage.show();
         controller = loader.getController();
         controller.setGotAnswer(isServer);
+        controller.setIsServer(isServer);
         controller.setHasOpponent(!isServer);
         connection.startConnection();
         controller.initializeAll(connection);

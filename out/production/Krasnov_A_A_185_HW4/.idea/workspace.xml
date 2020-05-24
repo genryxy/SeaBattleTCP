@@ -65,6 +65,7 @@
       <list>
         <option value="Interface" />
         <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -153,9 +154,28 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Client" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="ui.Main" />
+      <module name="Krasnov_A_A_185_HW4" />
+      <option name="PROGRAM_PARAMETERS" value="Client" />
+      <option name="VM_PARAMETERS" value="--module-path ${PATH_TO_FX} --add-modules=javafx.controls,javafx.fxml" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Client2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="ui.Main" />
+      <module name="Krasnov_A_A_185_HW4" />
+      <option name="PROGRAM_PARAMETERS" value="Client" />
+      <option name="VM_PARAMETERS" value="--module-path ${PATH_TO_FX} --add-modules=javafx.controls,javafx.fxml" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="ui.Main" />
       <module name="Krasnov_A_A_185_HW4" />
+      <option name="PROGRAM_PARAMETERS" value="Server" />
       <option name="VM_PARAMETERS" value="--module-path ${PATH_TO_FX} --add-modules=javafx.controls,javafx.fxml" />
       <extension name="coverage">
         <pattern>
@@ -306,6 +326,8 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Client" />
+      <item itemvalue="Application.Client2" />
       <item itemvalue="Application.Main" />
       <item itemvalue="JUnit.OceanTest.getShipsArray" />
       <item itemvalue="JUnit.OceanTest.getShipWrecked" />
@@ -355,6 +377,7 @@
       <workItem from="1586590480402" duration="655000" />
       <workItem from="1590091133881" duration="33000" />
       <workItem from="1590222614234" duration="266000" />
+      <workItem from="1590222927601" duration="47442000" />
     </task>
     <task id="LOCAL-00001" summary="Moved methods from Main to Controller, added changing color after hit and new game">
       <created>1586377727893</created>
@@ -392,9 +415,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/battleship/Ocean.java</url>
-          <line>90</line>
-          <option name="timeStamp" value="2" />
+          <url>file://$PROJECT_DIR$/src/ui/Controller.java</url>
+          <line>178</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/ui/Controller.java</url>
+          <line>163</line>
+          <option name="timeStamp" value="41" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
