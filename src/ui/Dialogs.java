@@ -22,10 +22,15 @@ public class Dialogs {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Choice");
         alert.setHeaderText(null);
-        alert.setContentText("Do you want to place ships randomly? " +
-                "(ok - randomly, cancel - manually)");
+        alert.setContentText("Do you want to put ships randomly or manually? ");
+
+        ButtonType okButtonType = new ButtonType("Randomly", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("Manually", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getDialogPane().getButtonTypes().clear();
+        alert.getDialogPane().getButtonTypes().addAll(okButtonType, cancelButtonType);
+
         Optional<ButtonType> result = alert.showAndWait();
-        return result.get() == ButtonType.CANCEL;
+        return result.get().getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE;
     }
 
     /**

@@ -99,7 +99,11 @@
     </center>
 
     <right>
-        <VBox minWidth="200">
+        <VBox minWidth="200" spacing="5">
+            <Text text="Left field (green background) - opponent field " lineSpacing="5" wrappingWidth="180"
+                  style="-fx-font-weight: bolder;"/>
+            <Text text="Right field (white background)- your field" lineSpacing="5"
+                  wrappingWidth="180" style="-fx-font-weight: bolder;"/>
             <padding>
                 <Insets top="5" right="5" bottom="10" left="15"/>
             </padding>
@@ -119,8 +123,8 @@
             <VBox spacing="15">
                 <Button text="Shoot"
                         onAction="#handleBtnShoot"/>
-<!--                <Button text="New game"-->
-<!--                        onAction="#handleBtnPlayAgain"/>-->
+                <!--                <Button text="New game"-->
+                <!--                        onAction="#handleBtnPlayAgain"/>-->
             </VBox>
         </VBox>
     </right>
@@ -131,7 +135,7 @@
                 <padding>
                     <Insets top="10" bottom="5" left="15" right="15"/>
                 </padding>
-                <Label> Your moves</Label>
+                <Label>Your moves</Label>
                 <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200" prefHeight="160" minHeight="100"
                             maxHeight="200">
                     <Text fx:id="txtLoggingMyMove" wrappingWidth="160"/>
@@ -141,7 +145,7 @@
                 <padding>
                     <Insets top="10" bottom="5" left="15" right="15"/>
                 </padding>
-                <Label> Opponent's moves</Label>
+                <Label>Opponent's moves</Label>
                 <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200" prefHeight="160" minHeight="100"
                             maxHeight="200">
                     <Text fx:id="txtLoggingOppMove" wrappingWidth="160"/>

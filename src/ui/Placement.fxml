@@ -8,10 +8,6 @@
 <BorderPane fx:controller="ui.PlacementController" xmlns:fx="http://javafx.com/fxml"
             prefHeight="600" prefWidth="700" minWidth="700">
 
-    <bottom>
-
-    </bottom>
-
     <center>
         <VBox>
             <GridPane fx:id="gridBattleField" alignment="center" hgap="1.5" vgap="1.5" prefWidth="400" minWidth="400"
@@ -52,11 +48,11 @@
     </center>
 
     <right>
-        <VBox minWidth="250">
+        <VBox minWidth="250" spacing="10">
             <padding>
                 <Insets top="5" right="5" bottom="10" left="15"/>
             </padding>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="250" prefHeight="200">
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="250" prefHeight="100">
                 <padding>
                     <Insets top="5" bottom="10"/>
                 </padding>
@@ -74,7 +70,23 @@
             <Button text="Change orientation"
                     onAction="#handleBtnChangeOrientation">
                 <padding>
-                    <Insets top="15" bottom="15"/>
+                    <Insets top="8" bottom="8" left="8" right="8"/>
+                </padding>
+            </Button>
+
+            <Button fx:id="btnStartGame"
+                    text="Start game"
+                    onAction="#handleBtnStartGame">
+                <padding>
+                    <Insets top="8" bottom="8" left="8" right="8"/>
+                </padding>
+            </Button>
+
+            <Button fx:id="btnRandomPut"
+                    text="Start game with random allocation"
+                    onAction="#handleBtnStartGameWithRandom">
+                <padding>
+                    <Insets top="8" bottom="8" left="8" right="8"/>
                 </padding>
             </Button>
         </VBox>

@@ -56,18 +56,18 @@ public class Controller {
      * Creates instance of Ocean and places ships.
      * Adds buttons to the GridPane.
      */
-    public void initializeOcean(Ocean createdOcen) {
+    public void initializeOcean(Ocean createdOcean) {
         // Waiting for a new thread to be created
         while (!isServer && hasOpponent && !connection.isCreated()) ;
         if (!isServer) {
             sendInfo("Client", null, true);
         }
-        if (createdOcen == null) {
+        if (createdOcean == null) {
             ocean = new Ocean();
             ocean.placeAllShipsRandomly();
             Dialogs.createAlertInfo("Randomly placement", "Ships were put by random");
         } else {
-            ocean = createdOcen;
+            ocean = createdOcean;
         }
         initOpponentField();
         initMyField();
@@ -162,7 +162,7 @@ public class Controller {
     public void doShootAtCoordinates(int row, int column) {
         // GridPane contains labels in the first row and in the first column (except
         // position [0,0]). Shape(11x11). Children store in ObservableList<Node>.
-        if (!isGotAnswer && !hasOpponent) {
+        if (!isGotAnswer || !hasOpponent) {
             Dialogs.createAlertInfo("Patience", "You must wait for the opponent to make a move");
             return;
         }

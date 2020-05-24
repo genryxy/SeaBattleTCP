@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 public class PlacementController {
@@ -21,6 +22,10 @@ public class PlacementController {
     public Text txtCurrOrientation;
     @FXML
     public GridPane gridBattleField;
+    @FXML
+    public Button btnStartGame;
+    @FXML
+    public Button btnRandomPut;
 
     private String hint = "You need to place 10 ships on the field.\n Current ship: ";
     private StringBuilder placedShips = new StringBuilder();
@@ -40,6 +45,7 @@ public class PlacementController {
         placedShips.append("List of ships that were placed:\n");
         setTxtReadyShips(placedShips.toString());
         createField();
+        btnStartGame.setDisable(true);
     }
 
     /**
@@ -93,7 +99,6 @@ public class PlacementController {
         int row = GridPane.getRowIndex(btn) - 1;
         int column = GridPane.getColumnIndex(btn) - 1;
 
-//        System.out.println(row + ", " + column);
         if (ships[numberReadyShips].okToPlaceShipAt(row, column, isHorizontal, ocean)) {
             ships[numberReadyShips].placeShipAt(row, column, isHorizontal, ocean);
             if (isHorizontal) {
@@ -118,6 +123,7 @@ public class PlacementController {
             if (numberReadyShips < 10) {
                 setTxtHint(hint + ships[numberReadyShips].getShipType() + "\nSize: " + ships[numberReadyShips].getLength());
             } else {
+                btnStartGame.setDisable(false);
                 setTxtHint("It's a great work! \nAll ships were placed.");
             }
         } else {
@@ -126,11 +132,31 @@ public class PlacementController {
     }
 
     /**
-     * Place all ten ships randomly on the (initially empty) ocean.
+     * Change orientation of the ship that should be put.
      */
     public void handleBtnChangeOrientation(ActionEvent actionEvent) {
         isHorizontal = !isHorizontal;
         setTxtCurrOrientation(isHorizontal);
+    }
+
+    /**
+     * It closes window, when all ships are put.
+     *
+     * @param actionEvent Some auxiliary info about action.
+     */
+    public void handleBtnStartGame(ActionEvent actionEvent) {
+        Stage stage = (Stage) btnStartGame.getScene().getWindow();
+        stage.close();
+    }
+
+    /**
+     * User can close the window at any time with random allocation.
+     *
+     * @param actionEvent Some auxiliary info about action.
+     */
+    public void handleBtnStartGameWithRandom(ActionEvent actionEvent) {
+        Stage stage = (Stage) btnRandomPut.getScene().getWindow();
+        stage.close();
     }
 
     /**
