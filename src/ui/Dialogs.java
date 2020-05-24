@@ -29,90 +29,16 @@ public class Dialogs {
     }
 
     /**
-     * Creates alert that your opponent has finished game.
+     * Creates an alert with specified title and content.
+     *
+     * @param title   The title of the alert.
+     * @param content The content of the alert.
      */
-    public static void createAlertStartGame() {
+    public static void createAlertInfo(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Start game");
+        alert.setTitle(title);
         alert.setHeaderText(null);
-        alert.setContentText("The opponent appeared. Let's start game!");
-        alert.showAndWait();
-    }
-
-    /**
-     * Creates alert that user put all ships and should start.
-     */
-    public static void createAlertPutAllShips() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Start game");
-        alert.setHeaderText(null);
-        alert.setContentText("You put all ships. You should start a game.");
-        alert.showAndWait();
-    }
-
-    /**
-     * Creates alert that you can't put ship at this place.
-     */
-    public static void createAlertBadPlace() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Impossible place");
-        alert.setHeaderText(null);
-        alert.setContentText("You can't put a ship here. Please, try another place!");
-        alert.showAndWait();
-    }
-
-    /**
-     * Creates alert that you can't make move before your opponent's answer.
-     */
-    public static void createAlertOpponentMove() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Patience");
-        alert.setHeaderText(null);
-        alert.setContentText("You must wait for the opponent to make a move");
-        alert.showAndWait();
-    }
-
-    /**
-     * Creates alert that you can't make move before your opponent's answer.
-     */
-    public static void createAlertWrongParams() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Wrong params");
-        alert.setHeaderText(null);
-        alert.setContentText("You should specify a parameter: Server or Client");
-        alert.showAndWait();
-    }
-
-    /**
-     * Creates alert that you don't have opponent.
-     */
-    public static void createAlertNotOpponent() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Patience");
-        alert.setHeaderText(null);
-        alert.setContentText("You don't have an opponent. Please, wait!");
-        alert.showAndWait();
-    }
-
-    /**
-     * Creates alert that your opponent has finished game.
-     */
-    public static void createAlertOpponentExit() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("End");
-        alert.setHeaderText(null);
-        alert.setContentText("Your opponent is out of the game, so the app will close.");
-        alert.showAndWait();
-    }
-
-    /**
-     * Creates alert with warning about repeating shot in the cell.
-     */
-    public static void createAlertRepeatedShot() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning");
-        alert.setHeaderText(null);
-        alert.setContentText("You've already fired at this cell. Please, try to shoot at another cell.");
+        alert.setContentText(content);
         alert.showAndWait();
     }
 
@@ -134,19 +60,6 @@ public class Dialogs {
 
         Optional<ButtonType> result = alert.showAndWait();
         return result.get() == ButtonType.OK;
-    }
-
-    /**
-     * Creates alert that confirms the end of the game. It contains overall statistics.
-     *
-     * @param res Overall statistics of both players.
-     */
-    public static void createAlertTotalResult(String res) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Result");
-        alert.setHeaderText(null);
-        alert.setContentText(res);
-        alert.showAndWait();
     }
 
     public static String showInputTextDialog(boolean isServer) {

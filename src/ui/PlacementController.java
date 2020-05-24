@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 public class PlacementController {
     @FXML
@@ -41,6 +42,9 @@ public class PlacementController {
         createField();
     }
 
+    /**
+     * Initializes the field for putting ships. Creates and adds buttons and labels.
+     */
     private void createField() {
         for (int i = 0; i < ocean.SIZE + 1; i++) {
             for (int j = 0; j < ocean.SIZE + 1; j++) {
@@ -65,8 +69,12 @@ public class PlacementController {
         }
     }
 
-    public Ocean getOcean() {
-        return ocean;
+    /**
+     * @return Return the pair with the number ships that were put and
+     * the instance of class Ocean with user's placement.
+     */
+    public Pair<Integer, Ocean> getOcean() {
+        return new Pair<>(numberReadyShips, ocean);
     }
 
     /**
@@ -77,7 +85,7 @@ public class PlacementController {
      */
     private void clickListener(Button btn) {
         if (numberReadyShips == 10) {
-            Dialogs.createAlertPutAllShips();
+            Dialogs.createAlertInfo("Start game", "You put all ships. You should start a game.");
             return;
         }
         // We need to subtract 1 because GridPane store labels in the
@@ -113,7 +121,7 @@ public class PlacementController {
                 setTxtHint("It's a great work! \nAll ships were placed.");
             }
         } else {
-            Dialogs.createAlertBadPlace();
+            Dialogs.createAlertInfo("Impossible place", "You can't put a ship here. Please, try another place!");
         }
     }
 
@@ -125,15 +133,31 @@ public class PlacementController {
         setTxtCurrOrientation(isHorizontal);
     }
 
+    /**
+     * It sets text in the Text txtCurrOrientation from .fxml
+     * Text depends on orientation.
+     *
+     * @param isHorizontal true - horizontal, false - vertical
+     */
     private void setTxtCurrOrientation(boolean isHorizontal) {
         txtCurrOrientation.setText(isHorizontal ? "Current orientation: horizontal" :
                 "Current orientation: vertical");
     }
 
+    /**
+     * It sets text in the Text txtHint from .fxml
+     *
+     * @param text The content of Text.
+     */
     public void setTxtHint(String text) {
         txtHint.setText(text);
     }
 
+    /**
+     * It sets text in the Text txtReadyShips from .fxml
+     *
+     * @param text The content of Text.
+     */
     public void setTxtReadyShips(String text) {
         txtReadyShips.setText(text);
     }

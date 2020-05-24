@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import java.util.List;
 
@@ -24,6 +25,10 @@ public class Main extends Application {
     private NetworkConnection connection;
     private Ocean createdOcean;
 
+    /**
+     * @param port The number of the port.
+     * @return The instance of the class Server with specified port and Consumer.
+     */
     private Server createServer(int port) {
         return new Server(port, data -> {
             // Get control back to the ui thread
@@ -32,13 +37,13 @@ public class Main extends Application {
                 if (str.equals("Client")) {
                     controller.setHasOpponent(true);
                     controller.sendInfo("Server", null, true);
-                    Dialogs.createAlertStartGame();
+                    Dialogs.createAlertInfo("Start game", "The opponent appeared. Let's start game!");
 //                    System.out.println("get msg from client, let's begin");
                 } else if (str.contains("Winner: Client")) {
                     controller.sendInfo(str + "\n\n" + controller.createInfoTextAboutGame(), null, true);
-                    Dialogs.createAlertTotalResult(str + "\n\n" + controller.createInfoTextAboutGame());
+                    Dialogs.createAlertInfo("Result", str + "\n\n" + controller.createInfoTextAboutGame());
                 } else if (str.contains("Winner: Server")) {
-                    Dialogs.createAlertTotalResult(str);
+                    Dialogs.createAlertInfo("Result", str);
                 } else {
                     processData(str);
                 }
@@ -46,6 +51,11 @@ public class Main extends Application {
         });
     }
 
+    /**
+     * @param port The number of the port.
+     * @param host The line with host.
+     * @return The instance of the class Client with specified port and Consumer.
+     */
     private Client createClient(int port, String host) {
         return new Client(port, host, data -> {
             // Get control back to the ui thread
@@ -53,13 +63,13 @@ public class Main extends Application {
                 String str = data.toString();
                 if (str.equals("Server")) {
                     controller.setHasOpponent(true);
-                    Dialogs.createAlertStartGame();
+                    Dialogs.createAlertInfo("Start game", "The opponent appeared. Let's start game!");
 //                    System.out.println("get msg from server, let's begin");
                 } else if (str.contains("Winner: Server")) {
                     controller.sendInfo(str + "\n\n" + controller.createInfoTextAboutGame(), null, true);
-                    Dialogs.createAlertTotalResult(str + "\n\n" + controller.createInfoTextAboutGame());
+                    Dialogs.createAlertInfo("Result", str + "\n\n" + controller.createInfoTextAboutGame());
                 } else if (str.contains("Winner: Client")) {
-                    Dialogs.createAlertTotalResult(str);
+                    Dialogs.createAlertInfo("Result", str);
                 } else {
                     processData(str);
                 }
@@ -67,10 +77,16 @@ public class Main extends Application {
         });
     }
 
+    /**
+     * Processes input string and makes different actions that depend on
+     * the content of the string.
+     *
+     * @param str Input string/
+     */
     private void processData(String str) {
         if (str.equals("exit")) {
             try {
-                Dialogs.createAlertOpponentExit();
+                Dialogs.createAlertInfo("End", "Your opponent is out of the game, so the app will close.");
             } catch (IllegalStateException e) {
             }
             controller.setHasOpponent(false);
@@ -84,6 +100,13 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Processes string. If string has format (digit, digit, - / * / S),
+     * than it's a shot.
+     *
+     * @param str Input string.
+     * @return true - it's a shot, false - otherwise.
+     */
     private boolean checkString(String str) {
         String digits = "0123456789";
         return str.contains(",") && str.split(",").length == 3
@@ -100,6 +123,7 @@ public class Main extends Application {
         if (connection != null) {
             connection.closeConnection();
         }
+        System.out.println("Connection was closed!");
     }
 
     @Override
@@ -111,7 +135,7 @@ public class Main extends Application {
         } else if (params.size() > 0 && params.get(0).equals("Client")) {
             isServer = false;
         } else {
-            Dialogs.createAlertWrongParams();
+            Dialogs.createAlertInfo("Wrong parameters", "You should specify a parameter: Server or Client");
             System.out.println("Wrong params!");
             return;
         }
@@ -146,12 +170,14 @@ public class Main extends Application {
 
             placeController = loaderPlacement.getController();
             placeController.initializeAll();
-            createdOcean = placementStage.showAndReturn(placeController);
+            Pair<Integer, Ocean> pair = placementStage.showAndReturn(placeController);
+            if (pair.getKey() == 10) {
+                createdOcean = pair.getValue();
+            }
         }
 
         controller.setGotAnswer(isServer);
         controller.setIsServer(isServer);
-//        controller.setHasOpponent(!isServer);
         controller.initializeOcean(createdOcean);
         primaryStage.setScene(new Scene(root, 1000, 600));
         primaryStage.show();

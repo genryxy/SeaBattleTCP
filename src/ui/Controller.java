@@ -5,10 +5,7 @@ import battleship.Ship;
 import connection.NetworkConnection;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -68,6 +65,7 @@ public class Controller {
         if (createdOcen == null) {
             ocean = new Ocean();
             ocean.placeAllShipsRandomly();
+            Dialogs.createAlertInfo("Randomly placement", "Ships were put by random");
         } else {
             ocean = createdOcen;
         }
@@ -160,7 +158,7 @@ public class Controller {
         // GridPane contains labels in the first row and in the first column (except
         // position [0,0]). Shape(11x11). Children store in ObservableList<Node>.
         if (!isGotAnswer && !hasOpponent) {
-            Dialogs.createAlertOpponentMove();
+            Dialogs.createAlertInfo("Patience", "You must wait for the opponent to make a move");
             return;
         }
         Button btn = ((Button) getGridBattleFieldOpponent().getChildren().get((row + 1) * ocean.SIZE + column + (row + 1)));
@@ -168,6 +166,14 @@ public class Controller {
         sendInfo(row + "," + column + "," + btn.getText(), btn, false);
     }
 
+    /**
+     * It marks area after opponent's shot. Sets the content of the button.
+     * Changes its background color.
+     *
+     * @param row    Coordinate Y of the ship.
+     * @param column Coordinate X of the ship.
+     * @param text   Content of the button with such coordinates.
+     */
     public void markShotFromOpponent(int row, int column, String text) {
         // GridPane contains labels in the first row and in the first column (except
         // position [0,0]). Shape(11x11). Children store in ObservableList<Node>.
@@ -187,6 +193,12 @@ public class Controller {
         }
     }
 
+    /**
+     *
+     * @param info
+     * @param btn
+     * @param isAuxiliary
+     */
     public void sendInfo(String info, Button btn, boolean isAuxiliary) {
         try {
             connection.send(info);
@@ -207,7 +219,7 @@ public class Controller {
      */
     private void clickListener(Button btn) {
         if (!hasOpponent) {
-            Dialogs.createAlertNotOpponent();
+            Dialogs.createAlertInfo("Patience", "You don't have an opponent. Please, wait!");
             return;
         }
         if (!ocean.isGameOver()) {
@@ -216,13 +228,13 @@ public class Controller {
             int row = GridPane.getRowIndex(btn) - 1;
             int column = GridPane.getColumnIndex(btn) - 1;
             if (!isGotAnswer) {
-                Dialogs.createAlertOpponentMove();
+                Dialogs.createAlertInfo("Patience", "You must wait for the opponent to make a move");
                 return;
             }
 
             if (ocean.getShipsArray()[row][column].isAlreadyFired(row, column)) {
                 myMoveLoggingMsg.append("attempt to shoot the marked cell\n");
-                Dialogs.createAlertRepeatedShot();
+                Dialogs.createAlertInfo("Warning", "You've already fired at this cell. Please, try to shoot at another cell.");
             } else {
                 if (ocean.shootAt(row, column)) {
                     Utils.setBtnBackground(btn, Color.TOMATO);
@@ -318,14 +330,29 @@ public class Controller {
         }
     }
 
+    /**
+     * @param gotAnswer true - got answer from opponent or opponent
+     *                  had a successful shot,
+     *                  false - otherwise
+     */
     public void setGotAnswer(Boolean gotAnswer) {
         isGotAnswer = gotAnswer;
     }
 
+    /**
+     * It sets the value.
+     *
+     * @param hasOpponent true - has opponent, false - no
+     */
     public void setHasOpponent(Boolean hasOpponent) {
         this.hasOpponent = hasOpponent;
     }
 
+    /**
+     * It sets the value.
+     *
+     * @param isServer true - server, false - client.
+     */
     public void setIsServer(Boolean isServer) {
         this.isServer = isServer;
     }
