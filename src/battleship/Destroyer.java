@@ -1,6 +1,8 @@
 package battleship;
 
-public class Destroyer extends Ship {
+import java.io.Serializable;
+
+public class Destroyer extends Ship implements Serializable {
     /**
      * It's a constructor of the class.
      */

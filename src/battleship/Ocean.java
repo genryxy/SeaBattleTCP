@@ -1,8 +1,9 @@
 package battleship;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Ocean {
+public class Ocean implements Serializable {
     public final int SIZE = 10;
 
     private Ship[][] ships = new Ship[SIZE][SIZE];
@@ -14,9 +15,19 @@ public class Ocean {
     private boolean isHit = false;
 
     /**
-     * It's a constructor of the class.
+     * It's a constructor of the class (for serialization).
      */
     public Ocean() {
+    }
+
+    public Ocean(Ship[][] ships) {
+        this.ships = ships;
+    }
+
+    /**
+     * It's a constructor of the class.
+     */
+    public Ocean(boolean needInit) {
         shotsFired = 0;
         hitCount = 0;
         shipsSunk = 0;
@@ -190,5 +201,13 @@ public class Ocean {
             ans.append("The game is over!\n");
         }
         return ans.toString();
+    }
+
+    public Ship[][] getShips() {
+        return ships;
+    }
+
+    public void setShips(Ship[][] ships) {
+        this.ships = ships;
     }
 }

@@ -1,11 +1,16 @@
 package battleship;
 
-public class Ship {
+import java.io.Serializable;
+
+public class Ship implements Serializable {
     private int bowRow;
     private int bowColumn;
     private int length;
     private boolean horizontal;
     private boolean[] hit = new boolean[4];
+
+    public Ship() {
+    }
 
     /**
      * @return Returns the length of this particular ship.

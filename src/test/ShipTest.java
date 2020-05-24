@@ -10,7 +10,7 @@ class ShipTest {
 
     @Test
     void okToPlaceShipAt() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         Cruiser cruiser = new Cruiser();
 
         assertFalse(cruiser.okToPlaceShipAt(ocean.SIZE - 1, 0, false, ocean));
@@ -30,7 +30,7 @@ class ShipTest {
 
     @Test
     void placeShipAt() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         Cruiser cruiser = new Cruiser();
         cruiser.placeShipAt(1, 1, true, ocean);
         assertTrue(ocean.isOccupied(1, 1));

@@ -2,6 +2,7 @@ package ui;
 
 
 import battleship.Ocean;
+import battleship.Ship;
 import connection.Client;
 import connection.NetworkConnection;
 import connection.Server;
@@ -33,6 +34,14 @@ public class Main extends Application {
         return new Server(port, data -> {
             // Get control back to the ui thread
             Platform.runLater(() -> {
+                // Client and server should change with their fields!
+                if (data instanceof Ship[][]) {
+                    if (!controller.isWasSend()) {
+                        controller.sendInfo(controller.getTmpOcean().getShipsArray(), null, true);
+                    }
+                    controller.setOcean(new Ocean((Ship[][]) data));
+                    return;
+                }
                 String str = data.toString();
                 if (str.equals("Client")) {
                     controller.setHasOpponent(true);
@@ -60,6 +69,14 @@ public class Main extends Application {
         return new Client(port, host, data -> {
             // Get control back to the ui thread
             Platform.runLater(() -> {
+                // Client and server should change with their fields!
+                if (data instanceof Ship[][]) {
+                    if (!controller.isWasSend()) {
+                        controller.sendInfo(controller.getTmpOcean().getShipsArray(), null, true);
+                    }
+                    controller.setOcean(new Ocean((Ship[][]) data));
+                    return;
+                }
                 String str = data.toString();
                 if (str.equals("Server")) {
                     controller.setHasOpponent(true);

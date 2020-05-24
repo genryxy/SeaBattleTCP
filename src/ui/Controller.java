@@ -3,18 +3,22 @@ package ui;
 import battleship.Ocean;
 import battleship.Ship;
 import connection.NetworkConnection;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 
 public class Controller {
-    private Ocean ocean;
+    private Ocean ocean = new Ocean(true);
+    private Ocean tmpOcean;
     private int x;
     private int y;
     private StringBuilder myMoveLoggingMsg = new StringBuilder();
@@ -22,6 +26,7 @@ public class Controller {
     private Boolean isGotAnswer;
     private Boolean isServer;
     private boolean hasOpponent;
+    private boolean wasSend;
 
     @FXML
     private TextField txtYCoord;
@@ -37,6 +42,8 @@ public class Controller {
     private GridPane gridBattleFieldOpponent;
     @FXML
     private GridPane gridBattleFieldMe;
+    @FXML
+    public Button btnEndGame;
 
     @FXML
     private void handleBtnShoot() {
@@ -57,23 +64,37 @@ public class Controller {
      * Adds buttons to the GridPane.
      */
     public void initializeOcean(Ocean createdOcean) {
+        if (createdOcean == null) {
+            tmpOcean = new Ocean(true);
+            tmpOcean.placeAllShipsRandomly();
+            Dialogs.createAlertInfo("Randomly placement", "Ships were put by random");
+        } else {
+            tmpOcean = createdOcean;
+        }
+
         // Waiting for a new thread to be created
         while (!isServer && hasOpponent && !connection.isCreated()) ;
         if (!isServer) {
+            wasSend = true;
+            sendInfo(tmpOcean.getShipsArray(), null, true);
             sendInfo("Client", null, true);
-        }
-        if (createdOcean == null) {
-            ocean = new Ocean();
-            ocean.placeAllShipsRandomly();
-            Dialogs.createAlertInfo("Randomly placement", "Ships were put by random");
-        } else {
-            ocean = createdOcean;
         }
         initOpponentField();
         initMyField();
 
         getTxtXCoord().requestFocus();
         setTxtInfo(createInfoTextAboutGame());
+    }
+
+    public void setOcean(Ocean ocean) {
+        this.ocean = ocean;
+    }
+
+    /**
+     * @return Temporary ocean, before exchange.
+     */
+    public Ocean getTmpOcean() {
+        return tmpOcean;
     }
 
     /**
@@ -205,7 +226,7 @@ public class Controller {
      * @param btn         Instance of button to check the content. null - otherwise
      * @param isAuxiliary false - it was shot, true - otherwise
      */
-    public void sendInfo(String info, Button btn, boolean isAuxiliary) {
+    public void sendInfo(Serializable info, Button btn, boolean isAuxiliary) {
         try {
             connection.send(info);
             if (!isAuxiliary && btn.getText().equals("-")) {
@@ -275,7 +296,7 @@ public class Controller {
      * Reset the background color of the buttons.
      */
     public void reset() {
-        ocean = new Ocean();
+        ocean = new Ocean(true);
         ocean.placeAllShipsRandomly();
         for (Object obj : getGridBattleFieldOpponent().getChildren()) {
             if (obj instanceof Button) {
@@ -409,5 +430,19 @@ public class Controller {
      */
     private TextField getTxtXCoord() {
         return txtXCoord;
+    }
+
+    public boolean isWasSend() {
+        return wasSend;
+    }
+
+    /**
+     * It closes window/
+     *
+     * @param actionEvent Some auxiliary info about action.
+     */
+    public void handleBtnEndGame(ActionEvent actionEvent) {
+        Stage stage = (Stage) btnEndGame.getScene().getWindow();
+        stage.close();
     }
 }

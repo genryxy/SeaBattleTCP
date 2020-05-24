@@ -9,7 +9,7 @@ class OceanTest {
 
     @Test
     void placeAllShipsRandomly() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         ocean.placeAllShipsRandomly();
         int numberOccupiedCell = 0;
         int numberBattleship = 0;
@@ -47,7 +47,7 @@ class OceanTest {
 
     @Test
     void isOccupied() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         ocean.placeAllShipsRandomly();
         boolean isOccupiedCell = !(ocean.getShipsArray()[0][0].getShipType().equals("empty sea"));
         assertEquals(isOccupiedCell, ocean.isOccupied(0, 0));
@@ -55,7 +55,7 @@ class OceanTest {
 
     @Test
     void shootAt() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         ocean.placeAllShipsRandomly();
         boolean isEmptyCell = !(ocean.getShipsArray()[ocean.SIZE - 1][ocean.SIZE - 1]
                 .getShipType().equals("empty sea"));
@@ -79,7 +79,7 @@ class OceanTest {
 
     @Test
     void getShotsFired() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         ocean.placeAllShipsRandomly();
         assertEquals(ocean.getShotsFired(), 0);
         for (int row = 0; row < ocean.SIZE; row++) {
@@ -92,7 +92,7 @@ class OceanTest {
 
     @Test
     void getHitCount() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         ocean.placeAllShipsRandomly();
         assertEquals(ocean.getHitCount(), 0);
         for (int row = 0; row < ocean.SIZE; row++) {
@@ -105,7 +105,7 @@ class OceanTest {
 
     @Test
     void getShipsSunk() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         int numberSunk = 0;
         ocean.placeAllShipsRandomly();
         assertEquals(ocean.getShipsSunk(), 0);
@@ -123,7 +123,7 @@ class OceanTest {
 
     @Test
     void isGameOver() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         int numberSunk = 0;
         ocean.placeAllShipsRandomly();
         assertFalse(ocean.isGameOver());
@@ -141,7 +141,7 @@ class OceanTest {
 
     @Test
     void getShipsArray() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         assertNotNull(ocean.getShipsArray());
         assertEquals(ocean.getShipsArray().length, ocean.SIZE);
         assertEquals(ocean.getShipsArray()[0].length, ocean.SIZE);
@@ -149,7 +149,7 @@ class OceanTest {
 
     @Test
     void getShipWrecked() {
-        Ocean ocean = new Ocean();
+        Ocean ocean = new Ocean(true);
         ocean.placeAllShipsRandomly();
         assertEquals(ocean.getShipWrecked(), 0);
 

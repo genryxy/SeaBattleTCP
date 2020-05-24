@@ -125,6 +125,9 @@
                         onAction="#handleBtnShoot"/>
                 <!--                <Button text="New game"-->
                 <!--                        onAction="#handleBtnPlayAgain"/>-->
+                <Button fx:id="btnEndGame"
+                        text="End game"
+                        onAction="#handleBtnEndGame"/>
             </VBox>
         </VBox>
     </right>

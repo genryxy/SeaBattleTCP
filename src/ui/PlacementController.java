@@ -44,7 +44,7 @@ public class PlacementController {
     private boolean hasRevert = true;
 
     public PlacementController() {
-        ocean = new Ocean();
+        ocean = new Ocean(true);
     }
 
     /**

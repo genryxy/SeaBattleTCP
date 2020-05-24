@@ -1,6 +1,8 @@
 package battleship;
 
-public class EmptySea extends Ship {
+import java.io.Serializable;
+
+public class EmptySea extends Ship implements Serializable {
     public EmptySea() {
         setLength(1);
         getHit()[0] = false;
