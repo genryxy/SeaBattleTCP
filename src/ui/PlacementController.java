@@ -1,7 +1,6 @@
 package ui;
 
 import battleship.*;
-import com.sun.webkit.network.Util;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -12,6 +11,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlacementController {
     @FXML
@@ -26,26 +28,36 @@ public class PlacementController {
     public Button btnStartGame;
     @FXML
     public Button btnRandomPut;
+    @FXML
+    public Button btnRevertLast;
 
     private String hint = "You need to place 10 ships on the field.\n Current ship: ";
-    private StringBuilder placedShips = new StringBuilder();
+    private List<String> placedShips = new ArrayList<>();
     private Ocean ocean;
     private boolean isHorizontal;
     private int numberReadyShips;
     private Ship[] ships = {new Battleship(), new Cruiser(), new Cruiser(), new Destroyer(), new Destroyer(),
             new Destroyer(), new Submarine(), new Submarine(), new Submarine(), new Submarine()};
+    private Ship lastShip;
+    private int lastRow;
+    private int lastColumn;
+    private boolean hasRevert = true;
 
     public PlacementController() {
         ocean = new Ocean();
     }
 
+    /**
+     * It sets values for the different element of the interface.
+     */
     public void initializeAll() {
         setTxtCurrOrientation(isHorizontal);
         setTxtHint(hint + ships[numberReadyShips].getShipType() + "\nSize: " + ships[numberReadyShips].getLength());
-        placedShips.append("List of ships that were placed:\n");
-        setTxtReadyShips(placedShips.toString());
+        placedShips.add("List of ships that were placed:\n");
+        updateTxtReadyShips();
         createField();
         btnStartGame.setDisable(true);
+        btnRevertLast.setDisable(true);
     }
 
     /**
@@ -114,11 +126,12 @@ public class PlacementController {
                     Utils.setBtnBackground(tmpBtn, Color.GRAY);
                 }
             }
-            placedShips.append(numberReadyShips + 1)
-                    .append(") ")
-                    .append(ships[numberReadyShips].getShipType())
-                    .append("\n");
-            setTxtReadyShips(placedShips.toString());
+            lastShip = ships[numberReadyShips];
+            lastRow = row;
+            lastColumn = column;
+            placedShips.add((numberReadyShips + 1) + ") " + ships[numberReadyShips].getShipType() + "\n");
+            updateTxtReadyShips();
+            btnRevertLast.setDisable(false);
             numberReadyShips++;
             if (numberReadyShips < 10) {
                 setTxtHint(hint + ships[numberReadyShips].getShipType() + "\nSize: " + ships[numberReadyShips].getLength());
@@ -137,6 +150,36 @@ public class PlacementController {
     public void handleBtnChangeOrientation(ActionEvent actionEvent) {
         isHorizontal = !isHorizontal;
         setTxtCurrOrientation(isHorizontal);
+    }
+
+    /**
+     * It reverts last allocation.
+     *
+     * @param actionEvent Some auxiliary info about action.
+     */
+    public void handleBtnRevertLast(ActionEvent actionEvent) {
+        btnStartGame.setDisable(true);
+        if (numberReadyShips > 0) {
+            numberReadyShips--;
+            placedShips.remove(placedShips.size() - 1);
+            updateTxtReadyShips();
+            setTxtHint(hint + ships[numberReadyShips].getShipType() + "\nSize: " + ships[numberReadyShips].getLength());
+            ocean.removeShip(lastRow, lastColumn, lastShip);
+            if (lastShip.isHorizontal()) {
+                // GridPane contains labels in the first row and in the first column (except
+                // position [0,0]). Shape(11x11). Children store in ObservableList<Node>.
+                for (int i = lastColumn; i < lastColumn + lastShip.getLength(); i++) {
+                    Button tmpBtn = ((Button) gridBattleField.getChildren().get((lastRow + 1) * ocean.SIZE + i + (lastRow + 1)));
+                    Utils.setBtnBackground(tmpBtn, Color.LIGHTBLUE);
+                }
+            } else {
+                for (int i = lastRow; i < lastRow + lastShip.getLength(); i++) {
+                    Button tmpBtn = ((Button) gridBattleField.getChildren().get((i + 1) * ocean.SIZE + lastColumn + (i + 1)));
+                    Utils.setBtnBackground(tmpBtn, Color.LIGHTBLUE);
+                }
+            }
+            btnRevertLast.setDisable(true);
+        }
     }
 
     /**
@@ -180,11 +223,13 @@ public class PlacementController {
     }
 
     /**
-     * It sets text in the Text txtReadyShips from .fxml
-     *
-     * @param text The content of Text.
+     * It updates text in the Text txtReadyShips from .fxml
      */
-    public void setTxtReadyShips(String text) {
-        txtReadyShips.setText(text);
+    public void updateTxtReadyShips() {
+        StringBuilder sb = new StringBuilder();
+        for (String str : placedShips) {
+            sb.append(str);
+        }
+        txtReadyShips.setText(sb.toString());
     }
 }

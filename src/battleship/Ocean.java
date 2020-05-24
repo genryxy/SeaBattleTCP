@@ -48,6 +48,22 @@ public class Ocean {
         }
     }
 
+    public void removeShip(int row, int column, Ship ship) {
+        if (ship.isHorizontal()) {
+            for (int i = column; i < column + ship.getLength(); i++) {
+                ships[row][i] = new EmptySea();
+                ships[row][i].setBowRow(row);
+                ships[row][i].setBowColumn(i);
+            }
+        } else {
+            for (int i = row; i < row + ship.getLength(); i++) {
+                ships[i][column] = new EmptySea();
+                ships[i][column].setBowRow(i);
+                ships[i][column].setBowColumn(column);
+            }
+        }
+    }
+
     /**
      * @param row    The value of the row.
      * @param column The value of the column.

@@ -74,6 +74,14 @@
                 </padding>
             </Button>
 
+            <Button fx:id="btnRevertLast"
+                    text="Revert last allocation"
+                    onAction="#handleBtnRevertLast">
+                <padding>
+                    <Insets top="8" bottom="8" left="8" right="8"/>
+                </padding>
+            </Button>
+
             <Button fx:id="btnStartGame"
                     text="Start game"
                     onAction="#handleBtnStartGame">
